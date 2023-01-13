@@ -6,13 +6,11 @@ import { ulkeKaydet, ulkeGetir } from './api'
 
 const FirmaKarti = () => {
 
-    const [malzemeListesi, setMalzemeListesi] = useState([]);
     const [ulkeListesi, setUlkeListesi] = useState([]);
-    const [cariListesi, setCariListesi] = useState([]);
     const [filterText, setFilterText] = useState("");
     const [modalShow, setModalShow] = useState(false);
 
-    const filtered = malzemeListesi.filter((item) => {
+    const filtered = ulkeListesi.filter((item) => {
         return Object.keys(item).some((key) => {
             return item[key].toString().toLowerCase().includes(filterText.toLowerCase());
         })
@@ -38,7 +36,9 @@ const FirmaKarti = () => {
     }
 
     useEffect(() => {
-        ulkeGetir().then(data => setUlkeListesi(data))
+        ulkeGetir().then(data => {
+            setUlkeListesi(data)
+        })
     }, [])
 
     return (
@@ -71,9 +71,9 @@ const FirmaKarti = () => {
                     </div>
                 </form>
             </div>
-            {/*             <div className='border-t border-gray-200 px-2'>
+            <div className='border-t border-gray-200 px-2'>
                 <div className='flex gap-4 items-center my-2'>
-                    <h1 className=' text-lg font-semibold'>Malzeme Listesi</h1>
+                    <h1 className=' text-lg font-semibold'>Ülke Listesi</h1>
                     <div>
                         <label className='mr-2'>Ara : </label>
                         <input type="text" className='border outline-none pl-1' value={filterText} onChange={(e) => setFilterText(e.target.value)} />
@@ -82,36 +82,28 @@ const FirmaKarti = () => {
                 <table className='w-full'>
                     <thead className='bg-green-200'>
                         <tr className='py-2'>
-                            <td>Malz. Kodu</td>
-                            <td>Malz. Adı</td>
-                            <td>Malz. Birim</td>
-                            <td>Ted. Firma Kodu</td>
-                            <td>Ted. Firma Adı</td>
-                            <td>Pasif ?</td>
-                            <td>Malz. Grup</td>
-                            <td>Malz. Marka</td>
-                            <td>İşlem</td>
+                            <td>ID #</td>
+                            <td>Ülke Adı</td>
+                            <td>Orj. Ülke Adı</td>
+                            <td>Alan Kodu</td>
+                            <td>Kısa Kod</td>
                         </tr>
                     </thead>
                     <tbody>
                         {
                             filtered.map(item => (
-                                <tr key={item.MALZEME_KODU} className='hover:bg-gray-200 duration-150 select-none cursor-pointer' >
-                                    <td>{item.MALZEME_KODU}</td>
-                                    <td>{item.MALZEME_ADI}</td>
-                                    <td>{item.BIRIM}</td>
-                                    <td>{item.TEDARIKCI_KODU}</td>
-                                    <td>{item.TEDARIKCI_ADI}</td>
-                                    <td>{item.PASIF}</td>
-                                    <td>{item.MALZEME_GRUP}</td>
-                                    <td>{item.MALZEME_MARKA}</td>
-                                    <td><Icon name="update" size={20} /></td>
+                                <tr key={item.ID} className='hover:bg-gray-200 duration-150 select-none cursor-pointer' >
+                                    <td>{item.ID}</td>
+                                    <td>{item.ULKE_ADI}</td>
+                                    <td>{item.ORJ_ULKE_ADI}</td>
+                                    <td>{item.ALAN_KODU}</td>
+                                    <td>{item.KISA_KODU}</td>
                                 </tr>
                             ))
                         }
                     </tbody>
                 </table>
-            </div> */}
+            </div>
             <Modal title="Ülke Seçiniz" modalShow={modalShow} setModalShow={setModalShow}>
                 <table className='w-full'>
                     <thead className='bg-blue-200'>

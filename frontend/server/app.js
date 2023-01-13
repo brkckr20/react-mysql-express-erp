@@ -107,6 +107,21 @@ app.post("/ulke", async (req, res) => {
     res.send();
 })
 
+app.post("/malzemedepo1/:tip", async (req, res) => {
+    const { tip } = req.params;
+    try {
+        switch (tip) {
+            case "kaydet":
+                console.log("kaydet bölümüne girdi");
+            default:
+                break;
+        }
+    } catch (error) {
+
+    }
+    res.send();
+})
+
 
 app.listen(3001, () => {
     baglanti.connect((err) => {

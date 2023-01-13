@@ -20,6 +20,14 @@ export const setData = async (values) => {
     }
 }
 
+export const malzemeGirisKaydet = async (values, tip) => {
+    try {
+        const { data } = await axios.post(`${API}/malzemedepo1/${tip}`, values);
+        return data;
+    } catch (error) {
+        console.log(error);
+    }
+}
 
 /* birim getir */
 
