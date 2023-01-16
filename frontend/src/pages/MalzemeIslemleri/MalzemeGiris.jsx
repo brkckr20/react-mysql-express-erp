@@ -3,6 +3,7 @@ import { useFormik } from 'formik';
 import Icon from '../../icons';
 import { getData, birimGetir, cariGetir, malzemeGirisKaydet } from './api';
 import Modal from '../../components/Modal';
+import globalFilter from '../../utils/globalFilter';
 
 const MalzemeGiris = () => {
 
@@ -10,13 +11,27 @@ const MalzemeGiris = () => {
     const [birimListesi, setBirimListesi] = useState([]);
     const [cariListesi, setCariListesi] = useState([]);
     const [filterText, setFilterText] = useState("");
+    const [filterCompany, setFilterCompany] = useState("");
     const [modalShow, setModalShow] = useState(false);
+    const [kalem, setKalem] = useState([]);
 
-    const filtered = malzemeListesi.filter((item) => {
-        return Object.keys(item).some((key) => {
-            return item[key].toString().toLowerCase().includes(filterText.toLowerCase());
-        })
-    })
+    const handleSelectRow = (selectedItem) => {
+        console.log(selectedItem);
+        setKalem(kalems => [...kalems,
+        {
+            MALZEME_KODU: "",
+            malzemeAdi: "",
+            birim: "",
+            adet: 0,
+            pasif: "",
+            malzemeGrup: "",
+            malzemeMarka: "",
+        }])
+    }
+
+
+    const filtered = globalFilter(malzemeListesi, filterText);
+    const firmaFiltrele = globalFilter(cariListesi, filterCompany);
 
     const formik = useFormik({
         initialValues: {
@@ -84,6 +99,54 @@ const MalzemeGiris = () => {
                             </div>
                         </div>
                     </div>
+                    <div className='h-80 border mt-1'>
+                        <div className='flex h-full'>
+                            <div className='bg-gray-200 text-center w-10 shrink-0'>
+                                <div className='my-1'>
+                                    <button title="Yeni Satır Ekle">
+                                        <Icon name="new" />
+                                    </button>
+                                </div>
+                            </div>
+                            <div className='w-full bg-red-200'>
+                                <table className='bg-blue-800 w-full'>
+                                    <thead className='overflow-x-scroll'>
+                                        <tr className='text-white text-center overflow-x-scroll'>
+                                            <td>Kalem İşlem</td>
+                                            <td>Malzeme Kodu</td>
+                                            <td>Malzeme Adı</td>
+                                            <td>Miktar</td>
+                                            <td>Birim</td>
+                                            <td>Birim Fiyat</td>
+                                            <td>Not</td>
+                                            <td>Malzeme Grup</td>
+                                            <td>Malzeme Marka</td>
+                                            <td>Malzeme Marka</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody className='overflow-x-scroll'>
+                                        {
+                                            kalem.map((i, k) => (
+                                                <tr key={k} className="overflow-x-scroll">
+                                                    <td><input type="text" placeholder='Malzeme Kodu' value={i.MALZEME_KODU} /></td>
+                                                    <td><input type="text" placeholder='Malzeme Malzeme' /></td>
+                                                    <td><input type="text" placeholder='Malzeme Kodu' /></td>
+                                                    <td><input type="text" placeholder='Malzeme Kodu' /></td>
+                                                    <td><input type="text" placeholder='Malzeme Kodu' /></td>
+                                                    <td><input type="text" placeholder='Malzeme Kodu' /></td>
+                                                    <td><input type="text" placeholder='Malzeme Kodu' /></td>
+                                                    <td><input type="text" placeholder='Malzeme Kodu' /></td>
+                                                    <td><input type="text" placeholder='Malzeme Kodu' /></td>
+                                                    <td><input type="text" placeholder='Malzeme Kodu' /></td>
+                                                </tr>
+
+                                            ))
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
                 </form>
             </div>
             <div className='border-t border-gray-200 px-2'>
@@ -111,7 +174,7 @@ const MalzemeGiris = () => {
                     <tbody>
                         {
                             filtered.map(item => (
-                                <tr key={item.MALZEME_KODU} className='hover:bg-gray-200 duration-150 select-none cursor-pointer' /* onClick={() => rowSelect(item.ID)} */>
+                                <tr key={item.MALZEME_KODU} className='hover:bg-gray-200 duration-150 select-none cursor-pointer' onDoubleClick={() => handleSelectRow(item)}>
                                     <td>{item.MALZEME_KODU}</td>
                                     <td>{item.MALZEME_ADI}</td>
                                     <td>{item.BIRIM}</td>
@@ -128,6 +191,10 @@ const MalzemeGiris = () => {
                 </table>
             </div>
             <Modal title="Firma Seçiniz" modalShow={modalShow} setModalShow={setModalShow} firmaSec={firmaSec}>
+                <div>
+                    <span>Ara : </span>
+                    <input type="text" className='border outline-none pl-1' value={filterCompany} onChange={(e) => setFilterCompany(e.target.value)} />
+                </div>
                 <table className='w-full'>
                     <thead className='bg-blue-200'>
                         <tr className='py-2'>
@@ -138,7 +205,7 @@ const MalzemeGiris = () => {
                     </thead>
                     <tbody>
                         {
-                            cariListesi.map(item => (
+                            firmaFiltrele.map(item => (
                                 <tr key={item.ID} className='hover:bg-gray-200 duration-150 select-none cursor-pointer'
                                     onDoubleClick={() => {
                                         firmaSec(item)

@@ -8,9 +8,9 @@ import { Link } from 'react-router-dom';
 
 const Navbar = () => {
     return (
-        <nav className='max-w-xs w-full h-full border-r border-gray-300'>
+        <nav className='max-w-xs w-full h-full border-r border-gray-300 shrink-0'>
             <div className='text-center p-2 text-3xl text-purple-700 font-bold'>
-                <Link to="/">Sistem Takip</Link>
+                <Link to="/">Portal v.1.0</Link>
             </div>
             <div className='mx-2'>
                 <ListElement iconName="home" title="Genel Bilgiler" subTitles={genel} />

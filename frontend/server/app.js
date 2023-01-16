@@ -83,7 +83,6 @@ app.post("/cari", async (req, res) => {
     res.send();
 })
 
-
 app.get("/ulke", async (req, res) => {
     baglanti.query("SELECT * FROM ulke", (err, result) => {
         if (err) throw err;
@@ -112,7 +111,7 @@ app.post("/malzemedepo1/:tip", async (req, res) => {
     try {
         switch (tip) {
             case "kaydet":
-                console.log("kaydet bölümüne girdi");
+                console.log(req.body);
             default:
                 break;
         }
@@ -121,7 +120,6 @@ app.post("/malzemedepo1/:tip", async (req, res) => {
     }
     res.send();
 })
-
 
 app.listen(3001, () => {
     baglanti.connect((err) => {
