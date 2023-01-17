@@ -13,22 +13,20 @@ const MalzemeGiris = () => {
     const [filterText, setFilterText] = useState("");
     const [filterCompany, setFilterCompany] = useState("");
     const [modalShow, setModalShow] = useState(false);
+    const [secilenKalem, setSecilenKalem] = useState({});
     const [kalem, setKalem] = useState([]);
 
     const handleSelectRow = (selectedItem) => {
-        console.log(selectedItem);
         setKalem(kalems => [...kalems,
         {
-            MALZEME_KODU: "",
-            malzemeAdi: "",
-            birim: "",
-            adet: 0,
-            pasif: "",
-            malzemeGrup: "",
-            malzemeMarka: "",
+            MALZEME_KODU: selectedItem.MALZEME_KODU,
+            MALZEME_ADI: selectedItem.MALZEME_ADI,
+            MIKTAR: 0,
+            BIRIM: selectedItem.BIRIM,
         }])
+        setSecilenKalem(selectedItem);
+        console.log(secilenKalem);
     }
-
 
     const filtered = globalFilter(malzemeListesi, filterText);
     const firmaFiltrele = globalFilter(cariListesi, filterCompany);
@@ -58,6 +56,8 @@ const MalzemeGiris = () => {
         cariGetir().then(val => setCariListesi(val))
     }, [birimListesi])
 
+
+
     return (
         <>
             <div className='p-2'>
@@ -66,7 +66,7 @@ const MalzemeGiris = () => {
                         <button title='Kaydet' onClick={formik.handleSubmit} type="submit" className='border p-2 rounded-lg hover:bg-slate-200'>
                             <Icon name="save" size={35} />
                         </button>
-                        <button title='Temizle' onClick={() => formik.handleReset()} type="button" className='border p-2 rounded-lg hover:bg-slate-200'>
+                        <button title='Temizle' onClick={() => console.log("__>", secilenKalem)} type="button" className='border p-2 rounded-lg hover:bg-slate-200'>
                             <Icon name="clear" size={35} />
                         </button>
                     </div>
@@ -108,36 +108,31 @@ const MalzemeGiris = () => {
                                     </button>
                                 </div>
                             </div>
-                            <div className='w-full bg-red-200'>
-                                <table className='bg-blue-800 w-full'>
-                                    <thead className='overflow-x-scroll'>
+                            <div className='w-full bg-red-200 overflow-x-auto'>
+                                <table className='w-full'>
+                                    <thead className='bg-blue-800'>
                                         <tr className='text-white text-center overflow-x-scroll'>
-                                            <td>Kalem İşlem</td>
-                                            <td>Malzeme Kodu</td>
+                                            <td className='w-23'>Kalem İşlem</td>
+                                            <td className='w-23'>Malzeme Kodu</td>
                                             <td>Malzeme Adı</td>
-                                            <td>Miktar</td>
+                                            <td className='w-10'>Miktar</td>
                                             <td>Birim</td>
-                                            <td>Birim Fiyat</td>
-                                            <td>Not</td>
-                                            <td>Malzeme Grup</td>
-                                            <td>Malzeme Marka</td>
-                                            <td>Malzeme Marka</td>
                                         </tr>
                                     </thead>
                                     <tbody className='overflow-x-scroll'>
                                         {
                                             kalem.map((i, k) => (
                                                 <tr key={k} className="overflow-x-scroll">
-                                                    <td><input type="text" placeholder='Malzeme Kodu' value={i.MALZEME_KODU} /></td>
-                                                    <td><input type="text" placeholder='Malzeme Malzeme' /></td>
-                                                    <td><input type="text" placeholder='Malzeme Kodu' /></td>
-                                                    <td><input type="text" placeholder='Malzeme Kodu' /></td>
-                                                    <td><input type="text" placeholder='Malzeme Kodu' /></td>
-                                                    <td><input type="text" placeholder='Malzeme Kodu' /></td>
-                                                    <td><input type="text" placeholder='Malzeme Kodu' /></td>
-                                                    <td><input type="text" placeholder='Malzeme Kodu' /></td>
-                                                    <td><input type="text" placeholder='Malzeme Kodu' /></td>
-                                                    <td><input type="text" placeholder='Malzeme Kodu' /></td>
+                                                    <td className='w-23'>
+                                                        <select className='h-[23.98px] w-full' name="islemcinsi" id="">
+                                                            <option value="">GİRİŞ</option>
+                                                            <option value="">TAMİR GİRİŞ</option>
+                                                        </select>
+                                                    </td>
+                                                    <td><input className='w-full' type="text" placeholder='Malzeme Kodu' value={i.MALZEME_KODU} disabled="disabled" /></td>
+                                                    <td><input className='w-full' type="text" placeholder='Malzeme Adı' value={i.MALZEME_ADI} disabled="disabled" /></td>
+                                                    <td className='w-10'><input className='w-full' type="text" placeholder='Miktar' value={i.MIKTAR} onFocus={() => setSecilenKalem(i)} /></td>
+                                                    <td><input className='w-full' type="text" placeholder='Birim' value={i.BIRIM} disabled="disabled" /></td>
                                                 </tr>
 
                                             ))
@@ -149,7 +144,7 @@ const MalzemeGiris = () => {
                     </div>
                 </form>
             </div>
-            <div className='border-t border-gray-200 px-2'>
+            <div className='border-t border-gray-200 px-2 overflow-x-auto'>
                 <div className='flex gap-4 items-center my-2'>
                     <h1 className=' text-lg font-semibold'>Malzeme Listesi</h1>
                     <div>
@@ -168,7 +163,6 @@ const MalzemeGiris = () => {
                             <td>Pasif ?</td>
                             <td>Malz. Grup</td>
                             <td>Malz. Marka</td>
-                            <td>İşlem</td>
                         </tr>
                     </thead>
                     <tbody>
@@ -183,7 +177,6 @@ const MalzemeGiris = () => {
                                     <td>{item.PASIF}</td>
                                     <td>{item.MALZEME_GRUP}</td>
                                     <td>{item.MALZEME_MARKA}</td>
-                                    <td><Icon name="update" size={20} /></td>
                                 </tr>
                             ))
                         }
