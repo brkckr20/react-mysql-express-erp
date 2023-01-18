@@ -50,14 +50,14 @@ const FirmaKarti = () => {
     }, [])
 
     return (
-        <>
-            <div className='p-2 max-w-md'>
+        <div className='bg-slate-300 w-full h-full'>
+            <div className='p-2 max-w-md '>
                 <form action="">
                     <div className='flex gap-1 my-2'>
-                        <button title='Kaydet' onClick={formik.handleSubmit} type="submit" className='border p-2 rounded-lg hover:bg-slate-200'>
+                        <button title='Kaydet' onClick={formik.handleSubmit} type="submit" className='border p-2 rounded-lg bg-white hover:bg-slate-100'>
                             <Icon name="save" size={35} />
                         </button>
-                        <button title='Temizle' onClick={formik.resetForm} type="button" className='border p-2 rounded-lg hover:bg-slate-200'>
+                        <button title='Temizle' onClick={formik.resetForm} type="button" className='border p-2 rounded-lg bg-white hover:bg-slate-100'>
                             <Icon name="clear" size={35} />
                         </button>
                     </div>
@@ -81,7 +81,7 @@ const FirmaKarti = () => {
                         <label className='inline-block max-w-[200px] w-full'>Ülke : </label>
                         <div className='flex border'>
                             <input value={formik.values.ULKE} onChange={formik.handleChange} name="ULKE" className='w-full outline-none px-1' type="text" />
-                            <button type='button' onClick={() => setModalShow(true)}><Icon name="dots" /></button>
+                            <button type='button' className='bg-white' onClick={() => setModalShow(true)}><Icon name="dots" /></button>
                         </div>
                     </div>
                     <div className='flex'>
@@ -184,7 +184,7 @@ const FirmaKarti = () => {
                     </tbody>
                 </table>
             </Modal>
-        </>
+        </div>
     )
 }
 

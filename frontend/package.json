@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "server" : "nodemon ./server/app.js"
   },
   "dependencies": {
     "axios": "^1.2.2",

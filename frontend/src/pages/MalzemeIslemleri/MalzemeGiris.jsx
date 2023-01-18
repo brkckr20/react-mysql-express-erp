@@ -21,11 +21,9 @@ const MalzemeGiris = () => {
         {
             MALZEME_KODU: selectedItem.MALZEME_KODU,
             MALZEME_ADI: selectedItem.MALZEME_ADI,
-            MIKTAR: 0,
+            MIKTAR: selectedItem.MIKTAR,
             BIRIM: selectedItem.BIRIM,
         }])
-        setSecilenKalem(selectedItem);
-        console.log(secilenKalem);
     }
 
     const filtered = globalFilter(malzemeListesi, filterText);
@@ -37,11 +35,13 @@ const MalzemeGiris = () => {
             TARIH: '',
             TEDARIKCI_KODU: '',
             TEDARIKCI_ADI: '',
-            FATURA_NO: ''
+            FATURA_NO: '',
+            KALEMLER: secilenKalem
         },
         onSubmit: (values, bag) => {
-            malzemeGirisKaydet(values, "kaydet");
-            // bag.resetForm();
+            console.log(values);
+            console.log(kalem);
+            /* malzemeGirisKaydet(values, "kaydet"); */
         },
     });
 
@@ -57,7 +57,6 @@ const MalzemeGiris = () => {
     }, [birimListesi])
 
 
-
     return (
         <>
             <div className='p-2'>
@@ -66,7 +65,7 @@ const MalzemeGiris = () => {
                         <button title='Kaydet' onClick={formik.handleSubmit} type="submit" className='border p-2 rounded-lg hover:bg-slate-200'>
                             <Icon name="save" size={35} />
                         </button>
-                        <button title='Temizle' onClick={() => console.log("__>", secilenKalem)} type="button" className='border p-2 rounded-lg hover:bg-slate-200'>
+                        <button title='Temizle' onClick={() => console.log(secilenKalem)} type="button" className='border p-2 rounded-lg hover:bg-slate-200'>
                             <Icon name="clear" size={35} />
                         </button>
                     </div>
@@ -108,14 +107,14 @@ const MalzemeGiris = () => {
                                     </button>
                                 </div>
                             </div>
-                            <div className='w-full bg-red-200 overflow-x-auto'>
+                            <div className='w-full overflow-x-auto'>
                                 <table className='w-full'>
                                     <thead className='bg-blue-800'>
                                         <tr className='text-white text-center overflow-x-scroll'>
-                                            <td className='w-23'>Kalem İşlem</td>
-                                            <td className='w-23'>Malzeme Kodu</td>
+                                            <td>Kalem İşlem</td>
+                                            <td>Malzeme Kodu</td>
                                             <td>Malzeme Adı</td>
-                                            <td className='w-10'>Miktar</td>
+                                            <td>Miktar</td>
                                             <td>Birim</td>
                                         </tr>
                                     </thead>
@@ -129,12 +128,11 @@ const MalzemeGiris = () => {
                                                             <option value="">TAMİR GİRİŞ</option>
                                                         </select>
                                                     </td>
-                                                    <td><input className='w-full' type="text" placeholder='Malzeme Kodu' value={i.MALZEME_KODU} disabled="disabled" /></td>
-                                                    <td><input className='w-full' type="text" placeholder='Malzeme Adı' value={i.MALZEME_ADI} disabled="disabled" /></td>
-                                                    <td className='w-10'><input className='w-full' type="text" placeholder='Miktar' value={i.MIKTAR} onFocus={() => setSecilenKalem(i)} /></td>
-                                                    <td><input className='w-full' type="text" placeholder='Birim' value={i.BIRIM} disabled="disabled" /></td>
+                                                    <td><input type="text" placeholder='Malzeme Kodu' value={i.MALZEME_KODU} disabled="disabled" /></td>
+                                                    <td><input type="text" placeholder='Malzeme Adı' value={i.MALZEME_ADI} disabled="disabled" /></td>
+                                                    <td><input type="number" placeholder='Miktar' value={secilenKalem.MIKTAR || ''} onChange={(e) => secilenKalem.MIKTAR = e.target.value} onFocus={() => setSecilenKalem(i)} /></td>
+                                                    <td><input type="text" placeholder='Birim' value={i.BIRIM} disabled="disabled" /></td>
                                                 </tr>
-
                                             ))
                                         }
                                     </tbody>

@@ -25,6 +25,10 @@ const FirmaKarti = () => {
 
         },
         onSubmit: (values, bag) => {
+            if (!values.ULKE_ADI || !values.ORJ_ULKE_ADI || !values.ALAN_KODU || !values.KISA_KODU) {
+                alert("Uyarı! \nKayıt yapabilmek için tüm alanları doldurunuz.");
+                return false;
+            }
             ulkeKaydet(values);
             bag.resetForm();
         },
@@ -72,11 +76,11 @@ const FirmaKarti = () => {
                 </form>
             </div>
             <div className='border-t border-gray-200 px-2'>
-                <div className='flex gap-4 items-center my-2'>
+                <div className='flex gap-4 items-center justify-between my-2'>
                     <h1 className=' text-lg font-semibold'>Ülke Listesi</h1>
                     <div>
-                        <label className='mr-2'>Ara : </label>
                         <input type="text" className='border outline-none pl-1' value={filterText} onChange={(e) => setFilterText(e.target.value)} />
+                        <label className='ml-2'>Ara</label>
                     </div>
                 </div>
                 <table className='w-full'>
@@ -92,7 +96,7 @@ const FirmaKarti = () => {
                     <tbody>
                         {
                             filtered.map(item => (
-                                <tr key={item.ID} className='hover:bg-gray-200 duration-150 select-none cursor-pointer' >
+                                <tr key={item.ID} className='hover:bg-gray-200 duration-150 select-none cursor-pointer border'>
                                     <td>{item.ID}</td>
                                     <td>{item.ULKE_ADI}</td>
                                     <td>{item.ORJ_ULKE_ADI}</td>
