@@ -13,7 +13,7 @@ const MalzemeGiris = () => {
     const [filterText, setFilterText] = useState("");
     const [filterCompany, setFilterCompany] = useState("");
     const [modalShow, setModalShow] = useState(false);
-    const [secilenKalem, setSecilenKalem] = useState({});
+    const [secilenKalem, setSecilenKalem] = useState([]);
     const [kalem, setKalem] = useState([]);
 
     const handleSelectRow = (selectedItem) => {
@@ -21,7 +21,7 @@ const MalzemeGiris = () => {
         {
             MALZEME_KODU: selectedItem.MALZEME_KODU,
             MALZEME_ADI: selectedItem.MALZEME_ADI,
-            MIKTAR: selectedItem.MIKTAR,
+            MIKTAR: 0,
             BIRIM: selectedItem.BIRIM,
         }])
     }
@@ -39,8 +39,8 @@ const MalzemeGiris = () => {
             KALEMLER: secilenKalem
         },
         onSubmit: (values, bag) => {
-            console.log(values);
-            console.log(kalem);
+            console.log("values", values);
+            console.log("kalem", kalem);
             /* malzemeGirisKaydet(values, "kaydet"); */
         },
     });
@@ -55,6 +55,18 @@ const MalzemeGiris = () => {
         birimGetir().then(val => setBirimListesi(val))
         cariGetir().then(val => setCariListesi(val))
     }, [birimListesi])
+
+    const handleBirimUpdate = (event, kod) => {
+        // const x = kalem.find(item => item.MALZEME_KODU === kod);
+        // console.log(x);
+        console.log(event.target.value);
+    }
+
+    const handleFocus = (i) => {
+        const s = kalem.find(item => item.MALZEME_KODU === i.MALZEME_KODU)
+        s.MIKTAR = 10
+        console.log(s);
+    }
 
 
     return (
@@ -130,7 +142,10 @@ const MalzemeGiris = () => {
                                                     </td>
                                                     <td><input type="text" placeholder='Malzeme Kodu' value={i.MALZEME_KODU} disabled="disabled" /></td>
                                                     <td><input type="text" placeholder='Malzeme Adı' value={i.MALZEME_ADI} disabled="disabled" /></td>
-                                                    <td><input type="number" placeholder='Miktar' value={secilenKalem.MIKTAR || ''} onChange={(e) => secilenKalem.MIKTAR = e.target.value} onFocus={() => setSecilenKalem(i)} /></td>
+                                                    <td><input type="number" placeholder='Miktar'
+                                                        onChange={(e) => handleBirimUpdate(e, i)}
+                                                        onFocus={() => handleFocus(i)}
+                                                    /></td>
                                                     <td><input type="text" placeholder='Birim' value={i.BIRIM} disabled="disabled" /></td>
                                                 </tr>
                                             ))
