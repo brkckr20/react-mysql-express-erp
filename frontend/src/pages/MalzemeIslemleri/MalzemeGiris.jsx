@@ -13,7 +13,7 @@ const MalzemeGiris = () => {
     const [filterText, setFilterText] = useState("");
     const [filterCompany, setFilterCompany] = useState("");
     const [modalShow, setModalShow] = useState(false);
-    const [secilenKalem, setSecilenKalem] = useState([]);
+    const [secilenKalem, setSecilenKalem] = useState({});
     const [kalem, setKalem] = useState([]);
 
     const handleSelectRow = (selectedItem) => {
@@ -36,12 +36,11 @@ const MalzemeGiris = () => {
             TEDARIKCI_KODU: '',
             TEDARIKCI_ADI: '',
             FATURA_NO: '',
-            KALEMLER: secilenKalem
+            kalem
         },
-        onSubmit: (values, bag) => {
-            console.log("values", values);
-            console.log("kalem", kalem);
-            /* malzemeGirisKaydet(values, "kaydet"); */
+        onSubmit: (values) => {
+            // console.log("values", values);
+            malzemeGirisKaydet(values, "kaydet");
         },
     });
 
@@ -56,16 +55,13 @@ const MalzemeGiris = () => {
         cariGetir().then(val => setCariListesi(val))
     }, [birimListesi])
 
-    const handleBirimUpdate = (event, kod) => {
-        // const x = kalem.find(item => item.MALZEME_KODU === kod);
-        // console.log(x);
-        console.log(event.target.value);
+    const handleBirimUpdate = async (event, kod) => {
+        secilenKalem.MIKTAR = event.target.value;
     }
 
     const handleFocus = (i) => {
         const s = kalem.find(item => item.MALZEME_KODU === i.MALZEME_KODU)
-        s.MIKTAR = 10
-        console.log(s);
+        setSecilenKalem(s)
     }
 
 
@@ -77,7 +73,7 @@ const MalzemeGiris = () => {
                         <button title='Kaydet' onClick={formik.handleSubmit} type="submit" className='border p-2 rounded-lg hover:bg-slate-200'>
                             <Icon name="save" size={35} />
                         </button>
-                        <button title='Temizle' onClick={() => console.log(secilenKalem)} type="button" className='border p-2 rounded-lg hover:bg-slate-200'>
+                        <button title='Temizle' onClick={() => console.log("secilenKale")} type="button" className='border p-2 rounded-lg hover:bg-slate-200'>
                             <Icon name="clear" size={35} />
                         </button>
                     </div>
@@ -134,6 +130,7 @@ const MalzemeGiris = () => {
                                         {
                                             kalem.map((i, k) => (
                                                 <tr key={k} className="overflow-x-scroll">
+
                                                     <td className='w-23'>
                                                         <select className='h-[23.98px] w-full' name="islemcinsi" id="">
                                                             <option value="">GİRİŞ</option>
@@ -156,7 +153,7 @@ const MalzemeGiris = () => {
                         </div>
                     </div>
                 </form>
-            </div>
+            </div >
             <div className='border-t border-gray-200 px-2 overflow-x-auto'>
                 <div className='flex gap-4 items-center my-2'>
                     <h1 className=' text-lg font-semibold'>Malzeme Listesi</h1>
