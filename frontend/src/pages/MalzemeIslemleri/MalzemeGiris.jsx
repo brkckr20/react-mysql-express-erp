@@ -38,9 +38,11 @@ const MalzemeGiris = () => {
             FATURA_NO: '',
             kalem
         },
-        onSubmit: (values) => {
+        onSubmit: async (values) => {
             // console.log("values", values);
-            malzemeGirisKaydet(values, "kaydet");
+            await malzemeGirisKaydet(values, "kaydet");
+            // malzemeGirisKaydet(kalem, "fis");
+
         },
     });
 
@@ -64,6 +66,9 @@ const MalzemeGiris = () => {
         setSecilenKalem(s)
     }
 
+    const fisKaydet = (values) => {
+        console.log(values);
+    }
 
     return (
         <>
