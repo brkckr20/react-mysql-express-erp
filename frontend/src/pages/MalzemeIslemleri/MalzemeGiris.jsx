@@ -4,6 +4,7 @@ import Icon from '../../icons';
 import { getData, birimGetir, cariGetir, malzemeGirisKaydet } from './api';
 import Modal from '../../components/Modal';
 import globalFilter from '../../utils/globalFilter';
+import LabelInput from '../../components/Inputs/LabelInput';
 
 const MalzemeGiris = () => {
 
@@ -19,6 +20,7 @@ const MalzemeGiris = () => {
     const handleSelectRow = (selectedItem) => {
         setKalem(kalems => [...kalems,
         {
+            KALEM_ISLEM: selectedItem.KALEM_ISLEM,
             MALZEME_KODU: selectedItem.MALZEME_KODU,
             MALZEME_ADI: selectedItem.MALZEME_ADI,
             MIKTAR: 0,
@@ -39,10 +41,7 @@ const MalzemeGiris = () => {
             kalem
         },
         onSubmit: async (values) => {
-            // console.log("values", values);
-            await malzemeGirisKaydet(values, "kaydet");
-            // malzemeGirisKaydet(kalem, "fis");
-
+            await malzemeGirisKaydet(values, kalem, "kaydet");
         },
     });
 
@@ -60,14 +59,13 @@ const MalzemeGiris = () => {
     const handleBirimUpdate = async (event, kod) => {
         secilenKalem.MIKTAR = event.target.value;
     }
+    const handleKalemIslem = async (event, i) => {
+        secilenKalem.KALEM_ISLEM = event.target.value;
+    }
 
     const handleFocus = (i) => {
         const s = kalem.find(item => item.MALZEME_KODU === i.MALZEME_KODU)
         setSecilenKalem(s)
-    }
-
-    const fisKaydet = (values) => {
-        console.log(values);
     }
 
     return (
@@ -84,14 +82,8 @@ const MalzemeGiris = () => {
                     </div>
                     <div className='flex w-full gap-x-2 bg-orange-200 p-2'>
                         <div>
-                            <div className='flex'>
-                                <label className='inline-block max-w-[200px] w-full'>İşlem Cinsi : </label>
-                                <input value={formik.values.ISLEM_CINSI} disabled="disabled" onChange={formik.handleChange} name="ISLEM_CINSI" className='w-full border outline-none px-1' type="text" />
-                            </div>
-                            <div className='flex'>
-                                <label className='inline-block max-w-[200px] w-full'>Tarih : </label>
-                                <input value={formik.values.TARIH} onChange={formik.handleChange} name="TARIH" className='w-full border outline-none px-1' type="date" />
-                            </div>
+                            <LabelInput label="İşlem Cinsi : " value={formik.values.ISLEM_CINSI} disabled="disabled" onChange={formik.handleChange} name="ISLEM_CINSI" className='w-full border outline-none px-1' type="text" />
+                            <LabelInput label="Tarih : " value={formik.values.TARIH} onChange={formik.handleChange} name="TARIH" className='w-full border outline-none px-1' type="date" />
                             <div className='flex'>
                                 <label className='inline-block max-w-[200px] w-full'>Tedarikçi Firma Kodu : </label>
                                 <div className='flex border'>
@@ -101,14 +93,8 @@ const MalzemeGiris = () => {
                             </div>
                         </div>
                         <div>
-                            <div className='flex'>
-                                <label className='inline-block max-w-[200px] w-full'>Tedarikçi Firma Adı : </label>
-                                <input value={formik.values.TEDARIKCI_ADI} onChange={formik.handleChange} name="TEDARIKCI_ADI" className='w-full border outline-none px-1' type="text" />
-                            </div>
-                            <div className='flex'>
-                                <label className='inline-block max-w-[200px] w-full'>Fatura No : </label>
-                                <input value={formik.values.FATURA_NO} onChange={formik.handleChange} name="FATURA_NO" className='w-full border outline-none px-1' type="text" />
-                            </div>
+                            <LabelInput label="Tedarikçi Firma Adı : " value={formik.values.TEDARIKCI_ADI} onChange={formik.handleChange} name="TEDARIKCI_ADI" className='w-full border outline-none px-1' type="text" />
+                            <LabelInput label="Fatura No : " value={formik.values.FATURA_NO} onChange={formik.handleChange} name="FATURA_NO" className='w-full border outline-none px-1' type="text" />
                         </div>
                     </div>
                     <div className='h-80 border mt-1'>
@@ -121,14 +107,14 @@ const MalzemeGiris = () => {
                                 </div>
                             </div>
                             <div className='w-full overflow-x-auto'>
-                                <table className='w-full'>
+                                <table className=''>
                                     <thead className='bg-blue-800'>
                                         <tr className='text-white text-center overflow-x-scroll'>
-                                            <td>Kalem İşlem</td>
-                                            <td>Malzeme Kodu</td>
-                                            <td>Malzeme Adı</td>
-                                            <td>Miktar</td>
-                                            <td>Birim</td>
+                                            <td className='w-[200px]'>Kalem İşlem</td>
+                                            <td className='w-[200px]'>Malzeme Kodu</td>
+                                            <td className='w-[300px]'>Malzeme Adı</td>
+                                            <td className='w-[200px]'>Miktar</td>
+                                            <td className='w-[200px]'>Birim</td>
                                         </tr>
                                     </thead>
                                     <tbody className='overflow-x-scroll'>
@@ -136,19 +122,20 @@ const MalzemeGiris = () => {
                                             kalem.map((i, k) => (
                                                 <tr key={k} className="overflow-x-scroll">
 
-                                                    <td className='w-23'>
-                                                        <select className='h-[23.98px] w-full' name="islemcinsi" id="">
-                                                            <option value="">GİRİŞ</option>
-                                                            <option value="">TAMİR GİRİŞ</option>
+                                                    <td className='w-[200px]'>
+                                                        <select className='h-[23.98px] w-[200px]' onClick={() => handleFocus(i)} onChange={(e) => handleKalemIslem(e, i)} name="islemcinsi" id="">
+                                                            <option value="">Seçiniz</option>
+                                                            <option value="MALZEME GİRİŞ">MALZEME GİRİŞ</option>
+                                                            <option value="TAMİR GİRİŞ">TAMİR GİRİŞ</option>
                                                         </select>
                                                     </td>
-                                                    <td><input type="text" placeholder='Malzeme Kodu' value={i.MALZEME_KODU} disabled="disabled" /></td>
-                                                    <td><input type="text" placeholder='Malzeme Adı' value={i.MALZEME_ADI} disabled="disabled" /></td>
-                                                    <td><input type="number" placeholder='Miktar'
+                                                    <td className='w-[200px]'><input type="text" placeholder='Malzeme Kodu' value={i.MALZEME_KODU} disabled="disabled" /></td>
+                                                    <td className='w-[300px]'><input className='w-full' type="text" placeholder='Malzeme Adı' value={i.MALZEME_ADI} disabled="disabled" /></td>
+                                                    <td className='w-[200px]'><input type="number" placeholder='Miktar'
                                                         onChange={(e) => handleBirimUpdate(e, i)}
                                                         onFocus={() => handleFocus(i)}
                                                     /></td>
-                                                    <td><input type="text" placeholder='Birim' value={i.BIRIM} disabled="disabled" /></td>
+                                                    <td className='w-[200px]'><input type="text" placeholder='Birim' value={i.BIRIM} disabled="disabled" /></td>
                                                 </tr>
                                             ))
                                         }

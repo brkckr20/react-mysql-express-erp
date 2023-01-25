@@ -108,11 +108,12 @@ app.post("/ulke", async (req, res) => {
 
 app.post("/malzemedepo1/:tip", async (req, res) => {
     const { tip } = req.params;
-    const { ISLEM_CINSI, TARIH, TEDARIKCI_KODU, TEDARIKCI_ADI, FATURA_NO } = req.body;
+    const { ISLEM_CINSI, TARIH, TEDARIKCI_KODU, TEDARIKCI_ADI, FATURA_NO } = req.body.values;
+    const { kalem } = req.body;
     try {
         switch (tip) {
             case "kaydet":
-                const sorgu = `INSERT INTO malzeme_depo1 
+                const sorgu = `INSERT INTO malzeme_depo1
                     (ISLEM_CINSI,TARIH, FIRMA_KODU, FIRMA_ADI,FATURA_NO)
                     VALUES (
                         '${ISLEM_CINSI}',
@@ -127,36 +128,25 @@ app.post("/malzemedepo1/:tip", async (req, res) => {
                     const lastID = "SELECT LAST_INSERT_ID()"
                     baglanti.query(lastID, function (err, result) {
                         if (err) throw err;
-                        console.log(result[0]['LAST_INSERT_ID()']);
+                        const tablo1KayitID = result[0]['LAST_INSERT_ID()']
+                        for (let i = 0; i < kalem.length; i++) {
+                            const fisSorgu = `INSERT INTO malzeme_depo2 (REF_NO,KALEM_ISLEM,MALZEME_KODU,MALZEME_ADI,MIKTAR,BIRIM)
+                            VALUES(
+                                '${tablo1KayitID}',
+                                '${kalem[i].KALEM_ISLEM}',
+                                '${kalem[i].MALZEME_KODU}',
+                                '${kalem[i].MALZEME_ADI}',
+                                '${Number(kalem[i].MIKTAR)}',
+                                '${kalem[i].BIRIM}'
+                                )
+                            `;
+                            baglanti.query(fisSorgu, function (err, result) {
+                                if (err) throw err;
+                                console.log("kayıt işlemi başarılı.");
+                            })
+                        }
                     })
                 })
-                res.send();
-            case "fis":
-                // const gelenDegerler = req.body;
-                // const lastID = "SELECT LAST_INSERT_ID() from malzeme_depo1"
-                // baglanti.query(lastID, function (err, result) {
-                //     if (err) throw err;
-                //     console.log(result[0]);
-                // })
-                // const x = gelenDegerler.map(i => {
-                //     i.REF_NO = REF_NO
-                //     return i
-                // })
-                // console.log(REF_NO);
-                // const fisSorgu = `INSERT INTO malzeme_depo2
-                //     (REF_NO,KALEM_ISLEM, MALZEME_KODU, MALZEME_ADI,MIKTAR,BIRIM,MALZEME_GRUP,MALZEME_MARKA,TESLIM_ALAN,TAKIP_NO)
-                //     VALUES ?`
-
-
-                // baglanti.query(fisSorgu, values, function (err) {
-                //     if (err) throw err;
-                //     console.log("veriler girildi");
-                // })
-                // const lastID = "SELECT LAST_INSERT_ID()"
-                // baglanti.query(lastID, function (err, result) {
-                //     if (err) throw err;
-                //     console.log(result[0]['LAST_INSERT_ID()']);
-                // })
                 res.send();
             default:
                 break;
