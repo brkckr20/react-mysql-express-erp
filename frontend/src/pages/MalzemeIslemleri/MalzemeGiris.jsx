@@ -73,11 +73,26 @@ const MalzemeGiris = () => {
             <div className='p-2'>
                 <form action="">
                     <div className='flex gap-1 my-2'>
+                        <button title='Yeni' onClick={null} type="submit" className='border p-2 rounded-lg hover:bg-slate-200'>
+                            <Icon name="new" size={35} />
+                        </button>
                         <button title='Kaydet' onClick={formik.handleSubmit} type="submit" className='border p-2 rounded-lg hover:bg-slate-200'>
                             <Icon name="save" size={35} />
                         </button>
-                        <button title='Temizle' onClick={() => console.log("secilenKale")} type="button" className='border p-2 rounded-lg hover:bg-slate-200'>
-                            <Icon name="clear" size={35} />
+                        <button title='Güncelle' className='border p-2 rounded-lg hover:bg-slate-200'>
+                            <Icon name="update" size={35} />
+                        </button>
+                        <button title='Geri' type="button" className='border p-2 rounded-lg hover:bg-slate-200'>
+                            <Icon name="arrowBack" size={35} />
+                        </button>
+                        <button title='İleri' type="button" className='border p-2 rounded-lg hover:bg-slate-200'>
+                            <Icon name="arrowNext" size={35} />
+                        </button>
+                        <button title='Vazgeç' type="button" className='border p-2 rounded-lg hover:bg-slate-200'>
+                            <Icon name="giveUp" size={35} />
+                        </button>
+                        <button title='Sil' type="button" className='border p-2 rounded-lg hover:bg-slate-200'>
+                            <Icon name="trash" size={35} />
                         </button>
                     </div>
                     <div className='flex w-full gap-x-2 bg-orange-200 p-2'>
@@ -99,17 +114,18 @@ const MalzemeGiris = () => {
                     </div>
                     <div className='h-80 border mt-1'>
                         <div className='flex h-full'>
-                            <div className='bg-gray-200 text-center w-10 shrink-0'>
+                            <div className='bg-gray-200 text-center w-6 shrink-0'>
                                 <div className='my-1'>
-                                    <button title="Yeni Satır Ekle">
+                                    {/* <button title="Yeni Satır Ekle">
                                         <Icon name="new" />
-                                    </button>
+                                    </button> */}
                                 </div>
                             </div>
                             <div className='w-full overflow-x-auto'>
                                 <table className=''>
                                     <thead className='bg-blue-800'>
                                         <tr className='text-white text-center overflow-x-scroll'>
+                                            <td className='w-[40px] bg-red-600'>Sil</td>
                                             <td className='w-[200px]'>Kalem İşlem</td>
                                             <td className='w-[200px]'>Malzeme Kodu</td>
                                             <td className='w-[300px]'>Malzeme Adı</td>
@@ -121,16 +137,17 @@ const MalzemeGiris = () => {
                                         {
                                             kalem.map((i, k) => (
                                                 <tr key={k} className="overflow-x-scroll">
-
+                                                    <td className='w-[40px] flex justify-center'><button type='button'><Icon name="trash" /></button></td>
                                                     <td className='w-[200px]'>
                                                         <select className='h-[23.98px] w-[200px]' onClick={() => handleFocus(i)} onChange={(e) => handleKalemIslem(e, i)} name="islemcinsi" id="">
                                                             <option value="">Seçiniz</option>
                                                             <option value="MALZEME GİRİŞ">MALZEME GİRİŞ</option>
                                                             <option value="TAMİR GİRİŞ">TAMİR GİRİŞ</option>
+                                                            <option value="DOLUM GİRİŞ">DOLUM GİRİŞ</option>
                                                         </select>
                                                     </td>
                                                     <td className='w-[200px]'><input type="text" placeholder='Malzeme Kodu' value={i.MALZEME_KODU} disabled="disabled" /></td>
-                                                    <td className='w-[300px]'><input className='w-full' type="text" placeholder='Malzeme Adı' value={i.MALZEME_ADI} disabled="disabled" /></td>
+                                                    <td className='w-[300px]'><input className='w-full' type="text" placeholder='Malzeme Adı' value={i.MALZEME_ADI} title={i.MALZEME_ADI} disabled="disabled" /></td>
                                                     <td className='w-[200px]'><input type="number" placeholder='Miktar'
                                                         onChange={(e) => handleBirimUpdate(e, i)}
                                                         onFocus={() => handleFocus(i)}
@@ -152,6 +169,7 @@ const MalzemeGiris = () => {
                     <div>
                         <label className='mr-2'>Ara : </label>
                         <input type="text" className='border outline-none pl-1' value={filterText} onChange={(e) => setFilterText(e.target.value)} />
+                        <button className='border px-1' onClick={() => setFilterText("")}>X</button>
                     </div>
                 </div>
                 <table className='w-full'>

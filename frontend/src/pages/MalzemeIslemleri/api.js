@@ -22,7 +22,7 @@ export const setData = async (values) => {
 
 export const malzemeGirisKaydet = async (values, kalem, tip) => {
     try {
-        const { data } = await axios.post(`${API}/malzemedepo1/${tip}`, { values, kalem });
+        const { data } = await axios.post(`${API}/malzemedepo/${tip}`, { values, kalem });
         return data;
     } catch (error) {
         console.log(error);

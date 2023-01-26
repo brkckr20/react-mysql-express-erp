@@ -106,7 +106,7 @@ app.post("/ulke", async (req, res) => {
     res.send();
 })
 
-app.post("/malzemedepo1/:tip", async (req, res) => {
+app.post("/malzemedepo/:tip", async (req, res) => {
     const { tip } = req.params;
     const { ISLEM_CINSI, TARIH, TEDARIKCI_KODU, TEDARIKCI_ADI, FATURA_NO } = req.body.values;
     const { kalem } = req.body;
