@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from 'react'
 import { useFormik } from 'formik';
 import Icon from '../../icons';
-import { getData, birimGetir, cariGetir, malzemeGirisKaydet } from './api';
+import { getData, birimGetir, cariGetir, malzemeGirisKaydet, sarfMalzemeStok } from './api';
 import Modal from '../../components/Modal';
 import globalFilter from '../../utils/globalFilter';
 import LabelInput from '../../components/Inputs/LabelInput';
 
-const MalzemeGiris = () => {
+const MalzemeCikis = () => {
 
-    const [malzemeListesi, setMalzemeListesi] = useState([]);
+    const [malzemeDepo, setMalzemeDepo] = useState([]);
     const [birimListesi, setBirimListesi] = useState([]);
     const [cariListesi, setCariListesi] = useState([]);
     const [filterText, setFilterText] = useState("");
@@ -28,12 +28,12 @@ const MalzemeGiris = () => {
         }])
     }
 
-    const filtered = globalFilter(malzemeListesi, filterText);
+    const filtered = globalFilter(malzemeDepo, filterText);
     const firmaFiltrele = globalFilter(cariListesi, filterCompany);
 
     const formik = useFormik({
         initialValues: {
-            ISLEM_CINSI: 'MALZEME_GIRIS',
+            ISLEM_CINSI: 'MALZEME_CIKIS',
             TARIH: '',
             TEDARIKCI_KODU: '',
             TEDARIKCI_ADI: '',
@@ -51,10 +51,11 @@ const MalzemeGiris = () => {
     }
 
     useEffect(() => {
-        getData().then(val => setMalzemeListesi(val))
+
         birimGetir().then(val => setBirimListesi(val))
         cariGetir().then(val => setCariListesi(val))
-    }, [birimListesi])
+        sarfMalzemeStok().then(val => setMalzemeDepo(val))
+    }, [malzemeDepo])
 
     const handleBirimUpdate = async (event, kod) => {
         secilenKalem.MIKTAR = event.target.value;
@@ -146,9 +147,8 @@ const MalzemeGiris = () => {
                                                     <td className='w-[200px]'>
                                                         <select className='h-[23.98px] w-[200px]' onClick={() => handleFocus(i)} onChange={(e) => handleKalemIslem(e, i)} name="islemcinsi" id="">
                                                             <option value="">Seçiniz</option>
-                                                            <option value="MALZEME GİRİŞ">MALZEME GİRİŞ</option>
-                                                            <option value="TAMİR GİRİŞ">TAMİR GİRİŞ</option>
-                                                            <option value="DOLUM GİRİŞ">DOLUM GİRİŞ</option>
+                                                            <option value="KURUM ÇIKIŞ">KURUM ÇIKIŞ</option>
+                                                            <option value="TAMİR ÇIKIŞ">TAMİR ÇIKIŞ</option>
                                                         </select>
                                                     </td>
                                                     <td className='w-[200px]'><input type="text" placeholder='Malzeme Kodu' value={i.MALZEME_KODU} disabled="disabled" /></td>
@@ -170,7 +170,7 @@ const MalzemeGiris = () => {
             </div >
             <div className='border-t border-gray-200 px-2 overflow-x-auto'>
                 <div className='flex gap-4 items-center my-2'>
-                    <h1 className=' text-lg font-semibold'>Malzeme Kartı</h1>
+                    <h1 className=' text-lg font-semibold'>Malzeme Listesi</h1>
                     <div>
                         <label className='mr-2'>Ara : </label>
                         <input type="text" className='border outline-none pl-1' value={filterText} onChange={(e) => setFilterText(e.target.value)} />
@@ -182,10 +182,8 @@ const MalzemeGiris = () => {
                         <tr className='py-2'>
                             <td>Malz. Kodu</td>
                             <td>Malz. Adı</td>
-                            <td>Malz. Birim</td>
-                            <td>Ted. Firma Kodu</td>
-                            <td>Ted. Firma Adı</td>
-                            <td>Pasif ?</td>
+                            <td>Kalan Miktar</td>
+                            <td>Birim</td>
                             <td>Malz. Grup</td>
                             <td>Malz. Marka</td>
                         </tr>
@@ -196,10 +194,8 @@ const MalzemeGiris = () => {
                                 <tr key={item.MALZEME_KODU} className='hover:bg-gray-200 duration-150 select-none cursor-pointer' onDoubleClick={() => handleSelectRow(item)}>
                                     <td>{item.MALZEME_KODU}</td>
                                     <td>{item.MALZEME_ADI}</td>
+                                    <td>{item.KALAN_MIKTAR}</td>
                                     <td>{item.BIRIM}</td>
-                                    <td>{item.TEDARIKCI_KODU}</td>
-                                    <td>{item.TEDARIKCI_ADI}</td>
-                                    <td>{item.PASIF}</td>
                                     <td>{item.MALZEME_GRUP}</td>
                                     <td>{item.MALZEME_MARKA}</td>
                                 </tr>
@@ -242,4 +238,4 @@ const MalzemeGiris = () => {
     )
 }
 
-export default MalzemeGiris
+export default MalzemeCikis

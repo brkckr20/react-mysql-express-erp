@@ -29,6 +29,15 @@ export const malzemeGirisKaydet = async (values, kalem, tip) => {
     }
 }
 
+export const sarfMalzemeStok = async () => {
+    try {
+        const { data } = await axios.get(`${API}/sarfmalzemestok`);
+        return data;
+    } catch (error) {
+        console.log(error);
+    }
+}
+
 /* birim getir */
 
 export const birimGetir = async () => {

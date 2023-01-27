@@ -43,6 +43,45 @@ app.post("/malzemekarti", async (req, res) => {
     res.send();
 })
 
+/* sarf malzeme depo stok durumu */
+app.get("/sarfmalzemestok", async (req, res) => {
+    const sql = `Select
+    MALZEME_KODU,
+    MALZEME_ADI,
+    BIRIM,
+    MALZEME_MARKA,
+    SUM(MIKTAR)
+    -
+    IFNULL((Select SUM(MIKTAR) From malzeme_depo1 x Inner Join malzeme_depo2 y On (x.ID=y.REF_NO)
+        Where ISLEM_CINSI='MALZEME_CIKIS' and b.MALZEME_KODU=y.MALZEME_KODU),0) AS 'KALAN_MIKTAR'
+        
+        ,b.ID AS 'Takip No'
+        
+
+    From malzeme_depo1 a Inner Join malzeme_depo2 b On (a.ID=b.REF_NO)
+    Where ISLEM_CINSI='MALZEME_GIRIS'
+    AND MIKTAR
+    -
+    IFNULL((Select SUM(MIKTAR) From malzeme_depo1 x Inner Join malzeme_depo2 y On (x.ID=y.REF_NO)
+        Where ISLEM_CINSI='MALZEME_CIKIS' and b.MALZEME_KODU=y.MALZEME_KODU),0)
+    
+    
+    
+    GROUP BY
+        MALZEME_KODU,
+        MALZEME_ADI,
+        BIRIM,
+        MALZEME_GRUP,
+        MALZEME_MARKA,
+        b.ID
+    `
+    baglanti.query(sql, (err, result) => {
+        if (err) throw err;
+        res.send(result)
+    })
+})
+
+
 app.get("/birim", async (req, res) => {
     baglanti.query("SELECT * FROM birim", (err, result) => {
         if (err) throw err;

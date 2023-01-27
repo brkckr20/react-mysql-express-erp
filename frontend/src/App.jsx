@@ -6,6 +6,7 @@ import FirmaKarti from './pages/Kartlar/FirmaKarti'
 import UlkeKarti from './pages/Kartlar/UlkeKarti'
 import MalzemeKartiTanimlamalari from './pages/MalzemeIslemleri/MalzemeKartiTanimlamalari'
 import MalzemeGiris from './pages/MalzemeIslemleri/MalzemeGiris'
+import MalzemeCikis from './pages/MalzemeIslemleri/MalzemeCikis'
 
 function App() {
 
@@ -28,6 +29,9 @@ function App() {
           </Route>
           <Route exact path="/malzeme-giris">
             <MalzemeGiris />
+          </Route>
+          <Route exact path="/malzeme-cikis">
+            <MalzemeCikis />
           </Route>
           <Route exact path="/">
             <div>Anasayfa</div>

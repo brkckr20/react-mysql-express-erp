@@ -6,5 +6,9 @@ export const depoYonetimi = [
     {
         isim: "Malzeme Giriş",
         slug: "malzeme-giris"
+    },
+    {
+        isim: "Malzeme Çıkış",
+        slug: "malzeme-cikis"
     }
 ]
