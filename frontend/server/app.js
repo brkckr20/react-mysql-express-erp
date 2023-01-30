@@ -145,6 +145,42 @@ app.post("/ulke", async (req, res) => {
     res.send();
 })
 
+/* KAYIT LISTELEME */
+app.get("/malzemedepo/:depoTipi", async (req, res) => {
+    const { depoTipi } = req.params;
+    console.log(req.query);
+    if (depoTipi === 'giris') {
+        const sql = `SELECT d1.ID,D1.TARIH,D1.FIRMA_KODU,D1.FIRMA_ADI,D1.FATURA_NO,d2.KALEM_ISLEM,d2.MALZEME_KODU,d2.MALZEME_ADI,d2.MIKTAR,d2.BIRIM
+        FROM malzeme_depo1 d1 INNER JOIN malzeme_depo2 d2 on d1.ID = d2.REF_NO
+        where d1.ISLEM_CINSI = 'MALZEME_GIRIS'
+        ORDER BY D1.ID DESC LIMIT 1;
+    `
+        baglanti.query(sql, (err, result) => {
+            if (err) throw err;
+            res.send(result)
+        })
+    }
+
+})
+
+/* KAYIT LISTELEME */
+app.get("/malzemedepo/:depoTipi/:kayitNo", async (req, res) => {
+    const { depoTipi, kayitNo } = req.params;
+    console.log({ depoTipi, kayitNo });
+    /* if (depoTipi === 'giris') {
+        const sql = `SELECT d1.ID,D1.TARIH,D1.FIRMA_KODU,D1.FIRMA_ADI,D1.FATURA_NO,d2.KALEM_ISLEM,d2.MALZEME_KODU,d2.MALZEME_ADI,d2.MIKTAR,d2.BIRIM
+        FROM malzeme_depo1 d1 INNER JOIN malzeme_depo2 d2 on d1.ID = d2.REF_NO
+        where d1.ISLEM_CINSI = 'MALZEME_GIRIS'
+        ORDER BY D1.ID DESC LIMIT 1;
+    `
+        baglanti.query(sql, (err, result) => {
+            if (err) throw err;
+            res.send(result)
+        })
+    } */
+
+})
+
 app.post("/malzemedepo/:tip", async (req, res) => {
     const { tip } = req.params;
     const { ISLEM_CINSI, TARIH, TEDARIKCI_KODU, TEDARIKCI_ADI, FATURA_NO } = req.body.values;

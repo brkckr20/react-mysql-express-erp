@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react'
 import { useFormik } from 'formik';
 import Icon from '../../icons';
-import { getData, birimGetir, cariGetir, malzemeGirisKaydet } from './api';
+import { getData, birimGetir, cariGetir, malzemeGirisKaydet, malzemeGirisGetir, malzemeGirisOncekiKayit } from './api';
 import Modal from '../../components/Modal';
 import globalFilter from '../../utils/globalFilter';
 import LabelInput from '../../components/Inputs/LabelInput';
+import { converDate } from '../../utils/converDate';
 
 const MalzemeGiris = () => {
 
@@ -16,6 +17,10 @@ const MalzemeGiris = () => {
     const [modalShow, setModalShow] = useState(false);
     const [secilenKalem, setSecilenKalem] = useState({});
     const [kalem, setKalem] = useState([]);
+
+    // önceki kayıtların listelenmesi işlemleri
+    const [oncekiKayit, setOncekiKayit] = useState([]);
+    const [gosterilenKayitId, setGosterilenKayitId] = useState(0);
 
     const handleSelectRow = (selectedItem) => {
         setKalem(kalems => [...kalems,
@@ -73,6 +78,17 @@ const MalzemeGiris = () => {
         setKalem(result);
     }
 
+    const kayitGetir = async (depoTipi) => {
+        const veri = await malzemeGirisGetir(depoTipi);
+        setGosterilenKayitId(veri[0].ID)
+        setOncekiKayit(veri)
+    }
+
+    const oncekiKayitGetir = async (depoTipi, kayitNo) => {
+        const veri = await malzemeGirisOncekiKayit(depoTipi, kayitNo);
+        console.log(veri);
+    }
+
     return (
         <>
             <div className='p-2'>
@@ -87,13 +103,13 @@ const MalzemeGiris = () => {
                         <button title='Güncelle' className='border p-2 rounded-lg hover:bg-slate-200'>
                             <Icon name="update" size={35} />
                         </button>
-                        <button title='Geri' type="button" className='border p-2 rounded-lg hover:bg-slate-200'>
+                        <button title='Geri' type="button" onClick={() => oncekiKayitGetir("giris", [])} className='border p-2 rounded-lg hover:bg-slate-200'>
                             <Icon name="arrowBack" size={35} />
                         </button>
                         <button title='İleri' type="button" className='border p-2 rounded-lg hover:bg-slate-200'>
                             <Icon name="arrowNext" size={35} />
                         </button>
-                        <button title='Vazgeç' type="button" className='border p-2 rounded-lg hover:bg-slate-200'>
+                        <button title='Vazgeç' type="button" onClick={() => kayitGetir("giris", gosterilenKayitId)} className='border p-2 rounded-lg hover:bg-slate-200'>
                             <Icon name="giveUp" size={35} />
                         </button>
                         <button title='Sil' type="button" className='border p-2 rounded-lg hover:bg-slate-200'>
@@ -103,18 +119,19 @@ const MalzemeGiris = () => {
                     <div className='flex w-full gap-x-2 bg-orange-200 p-2'>
                         <div>
                             <LabelInput label="İşlem Cinsi : " value={formik.values.ISLEM_CINSI} disabled="disabled" onChange={formik.handleChange} name="ISLEM_CINSI" className='w-full border outline-none px-1' type="text" />
-                            <LabelInput label="Tarih : " value={formik.values.TARIH} onChange={formik.handleChange} name="TARIH" className='w-full border outline-none px-1' type="date" />
+                            <LabelInput label="Tarih : " value={oncekiKayit.length > 0 ? converDate(oncekiKayit[0].TARIH) : formik.values.TARIH} onChange={formik.handleChange} name="TARIH" className='w-full border outline-none px-1' type="date" />
                             <div className='flex'>
                                 <label className='inline-block max-w-[200px] w-full'>Tedarikçi Firma Kodu : </label>
                                 <div className='flex border'>
-                                    <input value={formik.values.TEDARIKCI_KODU} onChange={formik.handleChange} name="TEDARIKCI_KODU" className='w-full outline-none px-1' type="text" />
+                                    <input value={oncekiKayit.length > 0 ? oncekiKayit[0].FIRMA_KODU : formik.values.TEDARIKCI_KODU} onChange={formik.handleChange} name="TEDARIKCI_KODU" className='w-full outline-none px-1' type="text" />
                                     <button type='button' className='bg-white' onClick={() => setModalShow(true)}><Icon name="dots" /></button>
                                 </div>
                             </div>
                         </div>
                         <div>
-                            <LabelInput label="Tedarikçi Firma Adı : " value={formik.values.TEDARIKCI_ADI} onChange={formik.handleChange} name="TEDARIKCI_ADI" className='w-full border outline-none px-1' type="text" />
+                            <LabelInput label="Tedarikçi Firma Adı : " value={oncekiKayit.length > 0 ? oncekiKayit[0].FIRMA_ADI : formik.values.TEDARIKCI_ADI} onChange={formik.handleChange} name="TEDARIKCI_ADI" className='w-full border outline-none px-1' type="text" />
                             <LabelInput label="Fatura No : " value={formik.values.FATURA_NO} onChange={formik.handleChange} name="FATURA_NO" className='w-full border outline-none px-1' type="text" />
+                            <LabelInput label="Kayıt No : " disabled value={oncekiKayit.length > 0 ? oncekiKayit[0].ID : formik.values.FATURA_NO} name="KAYIT_NO" className='w-full border outline-none px-1' type="text" />
                         </div>
                     </div>
                     <div className='h-80 border mt-1'>
@@ -140,26 +157,44 @@ const MalzemeGiris = () => {
                                     </thead>
                                     <tbody className='overflow-x-scroll'>
                                         {
-                                            kalem.map((i, k) => (
-                                                <tr key={k} className="overflow-x-scroll">
-                                                    <td className='w-[40px] flex justify-center'><button type='button' onClick={() => satirSil(i.MALZEME_KODU)}><Icon name="trash" /></button></td>
-                                                    <td className='w-[200px]'>
-                                                        <select className='h-[23.98px] w-[200px]' onClick={() => handleFocus(i)} onChange={(e) => handleKalemIslem(e, i)} name="islemcinsi" id="">
-                                                            <option value="">Seçiniz</option>
-                                                            <option value="MALZEME GİRİŞ">MALZEME GİRİŞ</option>
-                                                            <option value="TAMİR GİRİŞ">TAMİR GİRİŞ</option>
-                                                            <option value="DOLUM GİRİŞ">DOLUM GİRİŞ</option>
-                                                        </select>
-                                                    </td>
-                                                    <td className='w-[200px]'><input type="text" placeholder='Malzeme Kodu' value={i.MALZEME_KODU} disabled="disabled" /></td>
-                                                    <td className='w-[300px]'><input className='w-full' type="text" placeholder='Malzeme Adı' value={i.MALZEME_ADI} title={i.MALZEME_ADI} disabled="disabled" /></td>
-                                                    <td className='w-[200px]'><input type="number" placeholder='Miktar'
-                                                        onChange={(e) => handleBirimUpdate(e, i)}
-                                                        onFocus={() => handleFocus(i)}
-                                                    /></td>
-                                                    <td className='w-[200px]'><input type="text" placeholder='Birim' value={i.BIRIM} disabled="disabled" /></td>
-                                                </tr>
-                                            ))
+                                            !oncekiKayit.length > 0 ?
+                                                kalem.map((i, k) => (
+                                                    <tr key={k} className="overflow-x-scroll">
+                                                        <td className='w-[40px] flex justify-center'><button type='button' onClick={() => satirSil(i.MALZEME_KODU)}><Icon name="trash" /></button></td>
+                                                        <td className='w-[200px]'>
+                                                            <select className='h-[23.98px] w-[200px]' onClick={() => handleFocus(i)} onChange={(e) => handleKalemIslem(e, i)} name="islemcinsi" id="">
+                                                                <option value="">Seçiniz</option>
+                                                                <option value="MALZEME GİRİŞ">MALZEME GİRİŞ</option>
+                                                                <option value="TAMİR GİRİŞ">TAMİR GİRİŞ</option>
+                                                                <option value="DOLUM GİRİŞ">DOLUM GİRİŞ</option>
+                                                            </select>
+                                                        </td>
+                                                        <td className='w-[200px]'><input type="text" placeholder='Malzeme Kodu' value={i.MALZEME_KODU} disabled="disabled" /></td>
+                                                        <td className='w-[300px]'><input className='w-full' type="text" placeholder='Malzeme Adı' value={i.MALZEME_ADI} title={i.MALZEME_ADI} disabled="disabled" /></td>
+                                                        <td className='w-[200px]'><input type="number" placeholder='Miktar'
+                                                            onChange={(e) => handleBirimUpdate(e, i)}
+                                                            onFocus={() => handleFocus(i)}
+                                                        /></td>
+                                                        <td className='w-[200px]'><input type="text" placeholder='Birim' value={i.BIRIM} disabled="disabled" /></td>
+                                                    </tr>
+                                                ))
+                                                : oncekiKayit.map((i, k) => (
+                                                    <tr key={k} className="overflow-x-scroll">
+                                                        <td className='w-[40px] flex justify-center'><button type='button' onClick={() => satirSil(i.MALZEME_KODU)}><Icon name="trash" /></button></td>
+                                                        <td className='w-[200px]'>
+                                                            <select className='h-[23.98px] w-[200px]' onClick={() => handleFocus(i)} onChange={(e) => handleKalemIslem(e, i)} name="islemcinsi" id="">
+                                                                <option value={i.KALEM_ISLEM}>{i.KALEM_ISLEM}</option>
+                                                            </select>
+                                                        </td>
+                                                        <td className='w-[200px]'><input type="text" placeholder='Malzeme Kodu' value={i.MALZEME_KODU} disabled="disabled" /></td>
+                                                        <td className='w-[300px]'><input className='w-full' type="text" placeholder='Malzeme Adı' value={i.MALZEME_ADI} title={i.MALZEME_ADI} disabled="disabled" /></td>
+                                                        <td className='w-[200px]'><input type="number" placeholder='Miktar' value={i.MIKTAR}
+                                                            onChange={(e) => handleBirimUpdate(e, i)}
+                                                            onFocus={() => handleFocus(i)}
+                                                        /></td>
+                                                        <td className='w-[200px]'><input type="text" placeholder='Birim' value={i.BIRIM} disabled="disabled" /></td>
+                                                    </tr>
+                                                ))
                                         }
                                     </tbody>
                                 </table>

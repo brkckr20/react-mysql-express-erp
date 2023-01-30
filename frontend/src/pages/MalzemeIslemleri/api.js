@@ -29,6 +29,28 @@ export const malzemeGirisKaydet = async (values, kalem, tip) => {
     }
 }
 
+
+export const malzemeGirisGetir = async (depoTipi) => {
+    try {
+        const { data } = await axios.get(`${API}/malzemedepo/${depoTipi}`);
+        return data;
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+
+export const malzemeGirisOncekiKayit = async (depoTipi, id) => {
+    try {
+        const { data } = await axios.get(`${API}/malzemedepo/${depoTipi}?${id}`);
+        return data;
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+
+
 export const sarfMalzemeStok = async () => {
     try {
         const { data } = await axios.get(`${API}/sarfmalzemestok`);
