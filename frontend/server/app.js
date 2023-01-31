@@ -148,12 +148,11 @@ app.post("/ulke", async (req, res) => {
 /* KAYIT LISTELEME */
 app.get("/malzemedepo/:depoTipi", async (req, res) => {
     const { depoTipi } = req.params;
-    console.log(req.query);
     if (depoTipi === 'giris') {
         const sql = `SELECT d1.ID,D1.TARIH,D1.FIRMA_KODU,D1.FIRMA_ADI,D1.FATURA_NO,d2.KALEM_ISLEM,d2.MALZEME_KODU,d2.MALZEME_ADI,d2.MIKTAR,d2.BIRIM
         FROM malzeme_depo1 d1 INNER JOIN malzeme_depo2 d2 on d1.ID = d2.REF_NO
         where d1.ISLEM_CINSI = 'MALZEME_GIRIS'
-        ORDER BY D1.ID DESC LIMIT 1;
+        ORDER BY D1.ID DESC;
     `
         baglanti.query(sql, (err, result) => {
             if (err) throw err;
@@ -163,22 +162,43 @@ app.get("/malzemedepo/:depoTipi", async (req, res) => {
 
 })
 
-/* KAYIT LISTELEME */
-app.get("/malzemedepo/:depoTipi/:kayitNo", async (req, res) => {
-    const { depoTipi, kayitNo } = req.params;
-    console.log({ depoTipi, kayitNo });
-    /* if (depoTipi === 'giris') {
+/* ÖNCEKİ KAYIT LISTELEME */
+app.get("/malzemedepooncekikayit/:depoTipi/:id", async (req, res) => {
+    const { depoTipi, id } = req.params;
+    if (depoTipi === 'giris') {
         const sql = `SELECT d1.ID,D1.TARIH,D1.FIRMA_KODU,D1.FIRMA_ADI,D1.FATURA_NO,d2.KALEM_ISLEM,d2.MALZEME_KODU,d2.MALZEME_ADI,d2.MIKTAR,d2.BIRIM
         FROM malzeme_depo1 d1 INNER JOIN malzeme_depo2 d2 on d1.ID = d2.REF_NO
-        where d1.ISLEM_CINSI = 'MALZEME_GIRIS'
-        ORDER BY D1.ID DESC LIMIT 1;
+        where d1.ISLEM_CINSI = 'MALZEME_GIRIS' and d1.ID < ${id}
+        ORDER BY D1.ID DESC;
     `
         baglanti.query(sql, (err, result) => {
             if (err) throw err;
+            if (result.length < 1) {
+                res.json({ message: "Başka kayıt bulunamadı!", code: 400 });
+                return;
+            }
             res.send(result)
         })
-    } */
-
+    }
+})
+/* SONRAKİ KAYIT LISTELEME */
+app.get("/malzemedeposonrakikayit/:depoTipi/:id", async (req, res) => {
+    const { depoTipi, id } = req.params;
+    if (depoTipi === 'giris') {
+        const sql = `SELECT d1.ID,D1.TARIH,D1.FIRMA_KODU,D1.FIRMA_ADI,D1.FATURA_NO,d2.KALEM_ISLEM,d2.MALZEME_KODU,d2.MALZEME_ADI,d2.MIKTAR,d2.BIRIM
+        FROM malzeme_depo1 d1 INNER JOIN malzeme_depo2 d2 on d1.ID = d2.REF_NO
+        where d1.ISLEM_CINSI = 'MALZEME_GIRIS' and d1.ID > ${id}
+        ORDER BY D1.ID ASC;
+    `
+        baglanti.query(sql, (err, result) => {
+            if (err) throw err;
+            if (result.length < 1) {
+                res.json({ message: "Başka kayıt bulunamadı!", code: 400 });
+                return;
+            }
+            res.send(result)
+        })
+    }
 })
 
 app.post("/malzemedepo/:tip", async (req, res) => {

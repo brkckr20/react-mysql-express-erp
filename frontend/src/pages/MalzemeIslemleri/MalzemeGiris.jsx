@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { useFormik } from 'formik';
 import Icon from '../../icons';
-import { getData, birimGetir, cariGetir, malzemeGirisKaydet, malzemeGirisGetir, malzemeGirisOncekiKayit } from './api';
+import { getData, birimGetir, cariGetir, malzemeGirisKaydet, malzemeGirisGetir, malzemeGirisOncekiKayit, malzemeGirisSonrakiKayit } from './api';
 import Modal from '../../components/Modal';
 import globalFilter from '../../utils/globalFilter';
 import LabelInput from '../../components/Inputs/LabelInput';
@@ -21,6 +21,8 @@ const MalzemeGiris = () => {
     // önceki kayıtların listelenmesi işlemleri
     const [oncekiKayit, setOncekiKayit] = useState([]);
     const [gosterilenKayitId, setGosterilenKayitId] = useState(0);
+    const [ilkKayitVar, setIlkKayitVar] = useState(true);
+    const [sonKayitVar, setSonKayitVar] = useState(true);
 
     const handleSelectRow = (selectedItem) => {
         setKalem(kalems => [...kalems,
@@ -81,12 +83,33 @@ const MalzemeGiris = () => {
     const kayitGetir = async (depoTipi) => {
         const veri = await malzemeGirisGetir(depoTipi);
         setGosterilenKayitId(veri[0].ID)
-        setOncekiKayit(veri)
+        setOncekiKayit(veri);
+        setSonKayitVar(true);
+        setIlkKayitVar(true);
     }
 
     const oncekiKayitGetir = async (depoTipi, kayitNo) => {
         const veri = await malzemeGirisOncekiKayit(depoTipi, kayitNo);
-        console.log(veri);
+        /* ilk kayıt yok ise */
+        if (veri.code === 400) {
+            setIlkKayitVar(false);
+            return;
+        }
+        setGosterilenKayitId(veri[0].ID);
+        setOncekiKayit(veri);
+        setSonKayitVar(true)
+    }
+
+    const sonrakiKayitGetir = async (depoTipi, kayitNo) => {
+        const veri = await malzemeGirisSonrakiKayit(depoTipi, kayitNo);
+        /* ilk kayıt yok ise */
+        if (veri.code === 400) {
+            setSonKayitVar(false);
+            return;
+        }
+        setGosterilenKayitId(veri[0].ID)
+        setOncekiKayit(veri);
+        setIlkKayitVar(true);
     }
 
     return (
@@ -103,10 +126,10 @@ const MalzemeGiris = () => {
                         <button title='Güncelle' className='border p-2 rounded-lg hover:bg-slate-200'>
                             <Icon name="update" size={35} />
                         </button>
-                        <button title='Geri' type="button" onClick={() => oncekiKayitGetir("giris", [])} className='border p-2 rounded-lg hover:bg-slate-200'>
+                        <button title='Geri' type="button" onClick={() => oncekiKayitGetir("giris", gosterilenKayitId)} disabled={ilkKayitVar ? false : true} className='border p-2 rounded-lg hover:bg-slate-200 disabled:bg-slate-300 disabled:cursor-not-allowed'>
                             <Icon name="arrowBack" size={35} />
                         </button>
-                        <button title='İleri' type="button" className='border p-2 rounded-lg hover:bg-slate-200'>
+                        <button title='İleri' type="button" onClick={() => sonrakiKayitGetir("giris", gosterilenKayitId)} disabled={sonKayitVar ? false : true} className='border p-2 rounded-lg hover:bg-slate-200 disabled:bg-slate-300 disabled:cursor-not-allowed'>
                             <Icon name="arrowNext" size={35} />
                         </button>
                         <button title='Vazgeç' type="button" onClick={() => kayitGetir("giris", gosterilenKayitId)} className='border p-2 rounded-lg hover:bg-slate-200'>
@@ -144,14 +167,14 @@ const MalzemeGiris = () => {
                                 </div>
                             </div>
                             <div className='w-full overflow-x-auto'>
-                                <table className=''>
-                                    <thead className='bg-blue-800'>
+                                <table className='relative'>
+                                    <thead className='bg-blue-800 sticky top-0'>
                                         <tr className='text-white text-center overflow-x-scroll'>
                                             <td className='w-[40px] bg-red-600'>Sil</td>
                                             <td className='w-[200px]'>Kalem İşlem</td>
                                             <td className='w-[200px]'>Malzeme Kodu</td>
                                             <td className='w-[300px]'>Malzeme Adı</td>
-                                            <td className='w-[200px]'>Miktar</td>
+                                            <td className='w-[100px]'>Miktar</td>
                                             <td className='w-[200px]'>Birim</td>
                                         </tr>
                                     </thead>
@@ -171,7 +194,7 @@ const MalzemeGiris = () => {
                                                         </td>
                                                         <td className='w-[200px]'><input type="text" placeholder='Malzeme Kodu' value={i.MALZEME_KODU} disabled="disabled" /></td>
                                                         <td className='w-[300px]'><input className='w-full' type="text" placeholder='Malzeme Adı' value={i.MALZEME_ADI} title={i.MALZEME_ADI} disabled="disabled" /></td>
-                                                        <td className='w-[200px]'><input type="number" placeholder='Miktar'
+                                                        <td className='w-[100px]'><input type="number" placeholder='Miktar'
                                                             onChange={(e) => handleBirimUpdate(e, i)}
                                                             onFocus={() => handleFocus(i)}
                                                         /></td>
