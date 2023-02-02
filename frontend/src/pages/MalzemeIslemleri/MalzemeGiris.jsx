@@ -45,7 +45,8 @@ const MalzemeGiris = () => {
             TEDARIKCI_KODU: '',
             TEDARIKCI_ADI: '',
             FATURA_NO: '',
-            kalem
+            kalem,
+            ACIKLAMA: ""
         },
         onSubmit: async (values) => {
             await malzemeGirisKaydet(values, kalem, "kaydet");
@@ -84,7 +85,7 @@ const MalzemeGiris = () => {
         const veri = await malzemeGirisGetir(depoTipi);
         setGosterilenKayitId(veri[0].ID)
         setOncekiKayit(veri);
-        setSonKayitVar(true);
+        setSonKayitVar(false);
         setIlkKayitVar(true);
     }
 
@@ -102,7 +103,7 @@ const MalzemeGiris = () => {
 
     const sonrakiKayitGetir = async (depoTipi, kayitNo) => {
         const veri = await malzemeGirisSonrakiKayit(depoTipi, kayitNo);
-        /* ilk kayıt yok ise */
+        /* SON kayıt yok ise */
         if (veri.code === 400) {
             setSonKayitVar(false);
             return;
@@ -154,7 +155,13 @@ const MalzemeGiris = () => {
                         <div>
                             <LabelInput label="Tedarikçi Firma Adı : " value={oncekiKayit.length > 0 ? oncekiKayit[0].FIRMA_ADI : formik.values.TEDARIKCI_ADI} onChange={formik.handleChange} name="TEDARIKCI_ADI" className='w-full border outline-none px-1' type="text" />
                             <LabelInput label="Fatura No : " value={formik.values.FATURA_NO} onChange={formik.handleChange} name="FATURA_NO" className='w-full border outline-none px-1' type="text" />
-                            <LabelInput label="Kayıt No : " disabled value={oncekiKayit.length > 0 ? oncekiKayit[0].ID : formik.values.FATURA_NO} name="KAYIT_NO" className='w-full border outline-none px-1' type="text" />
+                            <LabelInput label="Kayıt No : " disabled value={oncekiKayit.length > 0 ? oncekiKayit[0].ID : ""} name="KAYIT_NO" className='w-full border outline-none px-1' type="text" />
+                        </div>
+                        <div>
+                            <div className='flex h-full'>
+                                <label className='inline-block max-w-[200px] w-full'>Açıklama : </label>
+                                <textarea name="aciklama" value={oncekiKayit.length > 0 ? oncekiKayit[0].ACIKLAMA : formik.values.ACIKLAMA} className='h-full pl-1 max-w-[200px] w-full'></textarea>
+                            </div>
                         </div>
                     </div>
                     <div className='h-80 border mt-1'>
@@ -174,7 +181,7 @@ const MalzemeGiris = () => {
                                             <td className='w-[200px]'>Kalem İşlem</td>
                                             <td className='w-[200px]'>Malzeme Kodu</td>
                                             <td className='w-[300px]'>Malzeme Adı</td>
-                                            <td className='w-[100px]'>Miktar</td>
+                                            <td className='w-[75px]'>Miktar</td>
                                             <td className='w-[200px]'>Birim</td>
                                         </tr>
                                     </thead>
@@ -194,7 +201,7 @@ const MalzemeGiris = () => {
                                                         </td>
                                                         <td className='w-[200px]'><input type="text" placeholder='Malzeme Kodu' value={i.MALZEME_KODU} disabled="disabled" /></td>
                                                         <td className='w-[300px]'><input className='w-full' type="text" placeholder='Malzeme Adı' value={i.MALZEME_ADI} title={i.MALZEME_ADI} disabled="disabled" /></td>
-                                                        <td className='w-[100px]'><input type="number" placeholder='Miktar'
+                                                        <td className='w-[75px]'><input type="number" className='w-[75px] border'
                                                             onChange={(e) => handleBirimUpdate(e, i)}
                                                             onFocus={() => handleFocus(i)}
                                                         /></td>

@@ -149,9 +149,9 @@ app.post("/ulke", async (req, res) => {
 app.get("/malzemedepo/:depoTipi", async (req, res) => {
     const { depoTipi } = req.params;
     if (depoTipi === 'giris') {
-        const sql = `SELECT d1.ID,D1.TARIH,D1.FIRMA_KODU,D1.FIRMA_ADI,D1.FATURA_NO,d2.KALEM_ISLEM,d2.MALZEME_KODU,d2.MALZEME_ADI,d2.MIKTAR,d2.BIRIM
+        const sql = `SELECT d1.ID,D1.TARIH,D1.FIRMA_KODU,D1.FIRMA_ADI,D1.FATURA_NO,d1.ACIKLAMA,d2.KALEM_ISLEM,d2.MALZEME_KODU,d2.MALZEME_ADI,d2.MIKTAR,d2.BIRIM,d2.NOT1,d2.NOT2,d2.NOT3
         FROM malzeme_depo1 d1 INNER JOIN malzeme_depo2 d2 on d1.ID = d2.REF_NO
-        where d1.ISLEM_CINSI = 'MALZEME_GIRIS'
+        where d1.ISLEM_CINSI = 'MALZEME_GIRIS' AND d1.ID = (SELECT MAX(ID) from malzeme_depo1)
         ORDER BY D1.ID DESC;
     `
         baglanti.query(sql, (err, result) => {
@@ -166,9 +166,9 @@ app.get("/malzemedepo/:depoTipi", async (req, res) => {
 app.get("/malzemedepooncekikayit/:depoTipi/:id", async (req, res) => {
     const { depoTipi, id } = req.params;
     if (depoTipi === 'giris') {
-        const sql = `SELECT d1.ID,D1.TARIH,D1.FIRMA_KODU,D1.FIRMA_ADI,D1.FATURA_NO,d2.KALEM_ISLEM,d2.MALZEME_KODU,d2.MALZEME_ADI,d2.MIKTAR,d2.BIRIM
+        const sql = `SELECT d1.ID,D1.TARIH,D1.FIRMA_KODU,D1.FIRMA_ADI,D1.FATURA_NO,d1.ACIKLAMA,d2.KALEM_ISLEM,d2.MALZEME_KODU,d2.MALZEME_ADI,d2.MIKTAR,d2.BIRIM
         FROM malzeme_depo1 d1 INNER JOIN malzeme_depo2 d2 on d1.ID = d2.REF_NO
-        where d1.ISLEM_CINSI = 'MALZEME_GIRIS' and d1.ID < ${id}
+        where d1.ISLEM_CINSI = 'MALZEME_GIRIS' AND d1.ID = (SELECT MAX(ID) from malzeme_depo1 WHERE ID < ${id})
         ORDER BY D1.ID DESC;
     `
         baglanti.query(sql, (err, result) => {
@@ -185,10 +185,10 @@ app.get("/malzemedepooncekikayit/:depoTipi/:id", async (req, res) => {
 app.get("/malzemedeposonrakikayit/:depoTipi/:id", async (req, res) => {
     const { depoTipi, id } = req.params;
     if (depoTipi === 'giris') {
-        const sql = `SELECT d1.ID,D1.TARIH,D1.FIRMA_KODU,D1.FIRMA_ADI,D1.FATURA_NO,d2.KALEM_ISLEM,d2.MALZEME_KODU,d2.MALZEME_ADI,d2.MIKTAR,d2.BIRIM
+        const sql = `SELECT d1.ID,D1.TARIH,D1.FIRMA_KODU,D1.FIRMA_ADI,D1.FATURA_NO,d1.ACIKLAMA,d2.KALEM_ISLEM,d2.MALZEME_KODU,d2.MALZEME_ADI,d2.MIKTAR,d2.BIRIM
         FROM malzeme_depo1 d1 INNER JOIN malzeme_depo2 d2 on d1.ID = d2.REF_NO
-        where d1.ISLEM_CINSI = 'MALZEME_GIRIS' and d1.ID > ${id}
-        ORDER BY D1.ID ASC;
+        where d1.ISLEM_CINSI = 'MALZEME_GIRIS' AND d1.ID = (SELECT MIN(ID) from malzeme_depo1 WHERE ID > ${id})
+        ORDER BY D1.ID desc;
     `
         baglanti.query(sql, (err, result) => {
             if (err) throw err;
