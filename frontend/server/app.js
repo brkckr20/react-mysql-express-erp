@@ -252,6 +252,17 @@ app.post("/malzemedepo/:tip", async (req, res) => {
     res.send();
 })
 
+
+/* kalem işlem getirme sorgusu */
+app.get("/kalem-islem/:depoAdi", async (req, res) => {
+    const { depoAdi } = req.params;
+    const sql = `SELECT KALEM_ISLEM FROM kalem_islem WHERE DEPO_ADI = '${depoAdi}'`;
+    baglanti.query(sql, (err, result) => {
+        if (err) throw err;
+        res.send(result);
+    })
+})
+
 app.listen(3001, () => {
     baglanti.connect((err) => {
         if (err) throw err;

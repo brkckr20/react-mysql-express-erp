@@ -87,3 +87,13 @@ export const cariGetir = async () => {
         console.log(error);
     }
 }
+
+/* kalem islem getir */
+export const kalemIslemGetir = async (depoAdi) => {
+    try {
+        const { data } = await axios.get(`${API}/kalem-islem/${depoAdi}`);
+        return data;
+    } catch (error) {
+        console.log(error);
+    }
+}

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { useFormik } from 'formik';
 import Icon from '../../icons';
-import { getData, birimGetir, cariGetir, malzemeGirisKaydet, malzemeGirisGetir, malzemeGirisOncekiKayit, malzemeGirisSonrakiKayit } from './api';
+import { getData, birimGetir, cariGetir, malzemeGirisKaydet, malzemeGirisGetir, malzemeGirisOncekiKayit, malzemeGirisSonrakiKayit, kalemIslemGetir } from './api';
 import Modal from '../../components/Modal';
 import globalFilter from '../../utils/globalFilter';
 import LabelInput from '../../components/Inputs/LabelInput';
@@ -17,6 +17,7 @@ const MalzemeGiris = () => {
     const [modalShow, setModalShow] = useState(false);
     const [secilenKalem, setSecilenKalem] = useState({});
     const [kalem, setKalem] = useState([]);
+    const [kalemIslemListesi, setKalemIslemListesi] = useState([]);
 
     // önceki kayıtların listelenmesi işlemleri
     const [oncekiKayit, setOncekiKayit] = useState([]);
@@ -38,16 +39,18 @@ const MalzemeGiris = () => {
     const filtered = globalFilter(malzemeListesi, filterText);
     const firmaFiltrele = globalFilter(cariListesi, filterCompany);
 
+    const initialValues = {
+        ISLEM_CINSI: 'MALZEME_GIRIS',
+        TARIH: '',
+        TEDARIKCI_KODU: '',
+        TEDARIKCI_ADI: '',
+        FATURA_NO: '',
+        kalem,
+        ACIKLAMA: ""
+    }
+
     const formik = useFormik({
-        initialValues: {
-            ISLEM_CINSI: 'MALZEME_GIRIS',
-            TARIH: '',
-            TEDARIKCI_KODU: '',
-            TEDARIKCI_ADI: '',
-            FATURA_NO: '',
-            kalem,
-            ACIKLAMA: ""
-        },
+        initialValues,
         onSubmit: async (values) => {
             await malzemeGirisKaydet(values, kalem, "kaydet");
         },
@@ -62,7 +65,8 @@ const MalzemeGiris = () => {
         getData().then(val => setMalzemeListesi(val))
         birimGetir().then(val => setBirimListesi(val))
         cariGetir().then(val => setCariListesi(val))
-    }, [birimListesi])
+        kalemIslemGetir(formik.values.ISLEM_CINSI).then(val => setKalemIslemListesi(val))
+    }, [])
 
     const handleBirimUpdate = async (event, kod) => {
         secilenKalem.MIKTAR = event.target.value;
@@ -113,12 +117,16 @@ const MalzemeGiris = () => {
         setIlkKayitVar(true);
     }
 
+    const yeniFisOlustur = () => {
+        setOncekiKayit([]);
+    }
+
     return (
         <>
             <div className='p-2'>
                 <form action="">
                     <div className='flex gap-1 my-2'>
-                        <button title='Yeni' onClick={null} type="submit" className='border p-2 rounded-lg hover:bg-slate-200'>
+                        <button title='Yeni' onClick={yeniFisOlustur} type="button" className='border p-2 rounded-lg hover:bg-slate-200'>
                             <Icon name="new" size={35} />
                         </button>
                         <button title='Kaydet' onClick={formik.handleSubmit} type="submit" className='border p-2 rounded-lg hover:bg-slate-200'>
@@ -194,9 +202,11 @@ const MalzemeGiris = () => {
                                                         <td className='w-[200px]'>
                                                             <select className='h-[23.98px] w-[200px]' onClick={() => handleFocus(i)} onChange={(e) => handleKalemIslem(e, i)} name="islemcinsi" id="">
                                                                 <option value="">Seçiniz</option>
-                                                                <option value="MALZEME GİRİŞ">MALZEME GİRİŞ</option>
-                                                                <option value="TAMİR GİRİŞ">TAMİR GİRİŞ</option>
-                                                                <option value="DOLUM GİRİŞ">DOLUM GİRİŞ</option>
+                                                                {
+                                                                    kalemIslemListesi.map(item => (
+                                                                        <option key={item.KALEM_ISLEM} value={item.KALEM_ISLEM}>{item.KALEM_ISLEM}</option>
+                                                                    ))
+                                                                }
                                                             </select>
                                                         </td>
                                                         <td className='w-[200px]'><input type="text" placeholder='Malzeme Kodu' value={i.MALZEME_KODU} disabled="disabled" /></td>

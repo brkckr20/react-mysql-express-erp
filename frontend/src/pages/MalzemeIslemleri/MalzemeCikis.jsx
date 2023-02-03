@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { useFormik } from 'formik';
 import Icon from '../../icons';
-import { getData, birimGetir, cariGetir, malzemeGirisKaydet, sarfMalzemeStok } from './api';
+import { birimGetir, cariGetir, malzemeGirisKaydet, sarfMalzemeStok } from './api';
 import Modal from '../../components/Modal';
 import globalFilter from '../../utils/globalFilter';
 import LabelInput from '../../components/Inputs/LabelInput';
@@ -9,7 +9,6 @@ import LabelInput from '../../components/Inputs/LabelInput';
 const MalzemeCikis = () => {
 
     const [malzemeDepo, setMalzemeDepo] = useState([]);
-    const [birimListesi, setBirimListesi] = useState([]);
     const [cariListesi, setCariListesi] = useState([]);
     const [filterText, setFilterText] = useState("");
     const [filterCompany, setFilterCompany] = useState("");
@@ -51,8 +50,7 @@ const MalzemeCikis = () => {
     }
 
     useEffect(() => {
-
-        birimGetir().then(val => setBirimListesi(val))
+        // birimGetir().then(val => setBirimListesi(val))
         cariGetir().then(val => setCariListesi(val))
         sarfMalzemeStok().then(val => setMalzemeDepo(val))
     }, [malzemeDepo])
@@ -73,6 +71,8 @@ const MalzemeCikis = () => {
         const result = kalem.filter(item => item.MALZEME_KODU !== kod);
         setKalem(result);
     }
+
+
 
     return (
         <>
