@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react'
 import { useFormik } from 'formik';
 import Icon from '../../icons';
-import { getData, birimGetir, cariGetir, malzemeGirisKaydet, malzemeGirisGetir, malzemeGirisOncekiKayit, malzemeGirisSonrakiKayit, kalemIslemGetir } from './api';
+import { getData, birimGetir, cariGetir, malzemeGirisKaydet, malzemeGirisGetir, malzemeGirisOncekiKayit, malzemeGirisSonrakiKayit, kalemIslemGetir, malzemeDepoListeDetay } from './api';
 import Modal from '../../components/Modal';
+import ListModal from '../../components/Modal';
 import globalFilter from '../../utils/globalFilter';
 import LabelInput from '../../components/Inputs/LabelInput';
 import { converDate } from '../../utils/converDate';
@@ -15,11 +16,13 @@ const MalzemeGiris = () => {
     const [filterText, setFilterText] = useState("");
     const [filterCompany, setFilterCompany] = useState("");
     const [modalShow, setModalShow] = useState(false);
+    const [listModalShow, setListModalShow] = useState(false);
     const [secilenKalem, setSecilenKalem] = useState({});
     const [kalem, setKalem] = useState([]);
     const [kalemIslemListesi, setKalemIslemListesi] = useState([]);
 
     // önceki kayıtların listelenmesi işlemleri
+    const [listeDetay, setListeDetay] = useState([]);
     const [oncekiKayit, setOncekiKayit] = useState([]);
     const [gosterilenKayitId, setGosterilenKayitId] = useState(0);
     const [ilkKayitVar, setIlkKayitVar] = useState(true);
@@ -117,6 +120,12 @@ const MalzemeGiris = () => {
         setIlkKayitVar(true);
     }
 
+    const listeDetayGetir = async (depoTipi) => {
+        setListModalShow(true)
+        const veri = await malzemeDepoListeDetay(depoTipi);
+        setListeDetay(veri);
+    }
+
     const yeniFisOlustur = () => {
         setOncekiKayit([]);
     }
@@ -140,6 +149,9 @@ const MalzemeGiris = () => {
                         </button>
                         <button title='İleri' type="button" onClick={() => sonrakiKayitGetir("giris", gosterilenKayitId)} disabled={sonKayitVar ? false : true} className='border p-2 rounded-lg hover:bg-slate-200 disabled:bg-slate-300 disabled:cursor-not-allowed'>
                             <Icon name="arrowNext" size={35} />
+                        </button>
+                        <button title='Liste' type="button" onClick={() => listeDetayGetir("giris")} className='border p-2 rounded-lg hover:bg-slate-200 disabled:bg-slate-300 disabled:cursor-not-allowed'>
+                            <Icon name="list" size={35} />
                         </button>
                         <button title='Vazgeç' type="button" onClick={() => kayitGetir("giris", gosterilenKayitId)} className='border p-2 rounded-lg hover:bg-slate-200'>
                             <Icon name="giveUp" size={35} />
@@ -313,6 +325,45 @@ const MalzemeGiris = () => {
                     </tbody>
                 </table>
             </Modal>
+            <ListModal title="Liste Detay" modalShow={listModalShow} setModalShow={setListModalShow} firmaSec={firmaSec}>
+                <div>
+                    <span>Ara : </span>
+                    <input type="text" className='border outline-none pl-1 mb-1' value={filterCompany} onChange={(e) => setFilterCompany(e.target.value)} />
+                </div>
+                <table className='w-full'>
+                    <thead className='bg-blue-200'>
+                        <tr className='py-2'>
+                            <td className='w-32'>Tarih</td>
+                            <td>Firma Kodu</td>
+                            <td>Firma Adı</td>
+                            <td>Kalem İşlem</td>
+                            <td>Malzeme Kodu</td>
+                            <td>Malzeme Adı</td>
+                            <td>Miktar</td>
+                            <td>Birim</td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {
+                            listeDetay.map(item => (
+                                <tr key={item.ID} className='hover:bg-gray-200 duration-150 select-none cursor-pointer'
+                                    onDoubleClick={() => {
+                                        console.log(item);
+                                    }}>
+                                    <td>{converDate(item.TARIH)}</td>
+                                    <td>{item.FIRMA_KODU}</td>
+                                    <td>{item.FIRMA_ADI}</td>
+                                    <td>{item.KALEM_ISLEM}</td>
+                                    <td>{item.MALZEME_KODU}</td>
+                                    <td>{item.MALZEME_ADI}</td>
+                                    <td>{item.MIKTAR}</td>
+                                    <td>{item.BIRIM}</td>
+                                </tr>
+                            ))
+                        }
+                    </tbody>
+                </table>
+            </ListModal>
         </>
     )
 }

@@ -200,6 +200,23 @@ app.get("/malzemedeposonrakikayit/:depoTipi/:id", async (req, res) => {
         })
     }
 })
+/* MALZEME DEPO GIRIS LISTE DETAY */
+app.get("/malzemedepolistedetay/:depoTipi", async (req, res) => {
+    const { depoTipi } = req.params;
+    if (depoTipi === 'giris') {
+        const sql = `SELECT d1.ID,D1.TARIH,D1.FIRMA_KODU,D1.FIRMA_ADI,D1.FATURA_NO,d1.ACIKLAMA,d2.KALEM_ISLEM,d2.MALZEME_KODU,d2.MALZEME_ADI,d2.MIKTAR,d2.BIRIM 
+                        FROM malzeme_depo1 d1 INNER JOIN malzeme_depo2 d2 on d1.ID = d2.REF_NO where d1.ISLEM_CINSI = 'MALZEME_GIRIS' ORDER BY D1.ID desc;
+    `
+        baglanti.query(sql, (err, result) => {
+            if (err) throw err;
+            if (result.length < 1) {
+                res.json({ message: "Başka kayıt bulunamadı!", code: 400 });
+                return;
+            }
+            res.send(result)
+        })
+    }
+})
 
 app.post("/malzemedepo/:tip", async (req, res) => {
     const { tip } = req.params;
