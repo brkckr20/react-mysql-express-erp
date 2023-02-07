@@ -7,6 +7,7 @@ import UlkeKarti from './pages/Kartlar/UlkeKarti'
 import MalzemeKartiTanimlamalari from './pages/MalzemeIslemleri/MalzemeKartiTanimlamalari'
 import MalzemeGiris from './pages/MalzemeIslemleri/MalzemeGiris'
 import MalzemeCikis from './pages/MalzemeIslemleri/MalzemeCikis'
+import Footer from './components/Footer'
 
 function App() {
 
@@ -38,6 +39,7 @@ function App() {
           </Route>
         </Switch>
       </div>
+      <Footer />
     </div>
   )
 }
