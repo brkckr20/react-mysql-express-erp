@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { useFormik } from 'formik';
 import Icon from '../../icons';
-import { getData, birimGetir, cariGetir, malzemeGirisKaydet, malzemeGirisGetir, malzemeGirisOncekiKayit, malzemeGirisSonrakiKayit, kalemIslemGetir, malzemeDepoListeDetay } from './api';
+import { getData, birimGetir, cariGetir, malzemeGirisKaydet, malzemeGirisGetir, malzemeGirisOncekiKayit, malzemeGirisSonrakiKayit, kalemIslemGetir, malzemeDepoListeDetay, malzemeDepoGirisTekKayitGetir } from './api';
 import Modal from '../../components/Modal';
 import ListModal from '../../components/Modal';
 import globalFilter from '../../utils/globalFilter';
@@ -128,6 +128,14 @@ const MalzemeGiris = () => {
 
     const yeniFisOlustur = () => {
         setOncekiKayit([]);
+    }
+
+    const idYeGoreKayitGetir = async (id) => {
+        setSonKayitVar(true);
+        const veri = await malzemeDepoGirisTekKayitGetir(id);
+        setGosterilenKayitId(veri[0].ID)
+        setOncekiKayit(veri);
+        setListModalShow(false);
     }
 
     return (
@@ -334,22 +342,20 @@ const MalzemeGiris = () => {
                     <thead className='bg-blue-200'>
                         <tr className='py-2'>
                             <td className='w-32'>Tarih</td>
-                            <td>Firma Kodu</td>
+                            <td className='w-32'>Firma Kodu</td>
                             <td>Firma Adı</td>
-                            <td>Kalem İşlem</td>
-                            <td>Malzeme Kodu</td>
-                            <td>Malzeme Adı</td>
-                            <td>Miktar</td>
+                            <td className='w-32'>Kalem İşlem</td>
+                            <td className='w-32'>Malzeme Kodu</td>
+                            <td className='w-32'>Malzeme Adı</td>
+                            <td className='w-16'>Miktar</td>
                             <td>Birim</td>
                         </tr>
                     </thead>
                     <tbody>
                         {
-                            listeDetay.map(item => (
-                                <tr key={item.ID} className='hover:bg-gray-200 duration-150 select-none cursor-pointer'
-                                    onDoubleClick={() => {
-                                        console.log(item);
-                                    }}>
+                            listeDetay.map((item, key) => (
+                                <tr key={key} className='hover:bg-gray-200 duration-150 select-none cursor-pointer border divide-x'
+                                    onDoubleClick={() => idYeGoreKayitGetir(item.ID)}>
                                     <td>{converDate(item.TARIH)}</td>
                                     <td>{item.FIRMA_KODU}</td>
                                     <td>{item.FIRMA_ADI}</td>

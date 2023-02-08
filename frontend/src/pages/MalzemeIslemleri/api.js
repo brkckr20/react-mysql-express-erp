@@ -66,6 +66,15 @@ export const malzemeDepoListeDetay = async (depoTipi) => {
     }
 }
 
+export const malzemeDepoGirisTekKayitGetir = async (id) => {
+    try {
+        const { data } = await axios.get(`${API}/malzemedepogiristekkayit/${id}`);
+        return data;
+    } catch (error) {
+        console.log(error);
+    }
+}
+
 export const sarfMalzemeStok = async () => {
     try {
         const { data } = await axios.get(`${API}/sarfmalzemestok`);
