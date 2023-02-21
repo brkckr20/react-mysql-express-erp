@@ -47,9 +47,9 @@ const FirmaKarti = () => {
     }
 
     useEffect(() => {
-        ulkeGetir().then(data => setUlkeListesi(data))
-        cariGetir().then(data => setCariListesi(data))
-    }, [cariListesi])
+        ulkeGetir().then(data => setUlkeListesi(data.data))
+        cariGetir().then(data => setCariListesi(data.data))
+    }, [])
 
     return (
         <div className='bg-slate-300 w-full h-full'>

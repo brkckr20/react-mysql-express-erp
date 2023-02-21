@@ -1,6 +1,7 @@
 import axios from 'axios';
-
-const API = "http://localhost:3001";
+import { API_URL } from '../../config/api'
+// const API = "http://localhost:3001";
+const API = API_URL
 
 export const getData = async () => {
     try {

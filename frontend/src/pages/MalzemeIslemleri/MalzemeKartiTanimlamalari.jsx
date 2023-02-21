@@ -41,9 +41,9 @@ const MalzemeKartiTanimlamalari = () => {
     }
 
     useEffect(() => {
-        getData().then(val => setMalzemeListesi(val))
-        birimGetir().then(val => setBirimListesi(val))
-        cariGetir().then(val => setCariListesi(val))
+        getData().then(val => setMalzemeListesi(val.data))
+        birimGetir().then(val => setBirimListesi(val.data))
+        cariGetir().then(val => setCariListesi(val.data))
     }, [birimListesi])
 
     return (
