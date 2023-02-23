@@ -13,3 +13,12 @@ export const cariGetir = async () => {
         console.log(error);
     }
 }
+
+export const dbGetir = async () => {
+    try {
+        const { data } = await axios.get(`${API}`);
+        return data;
+    } catch (error) {
+        console.log(error);
+    }
+}

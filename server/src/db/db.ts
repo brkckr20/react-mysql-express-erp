@@ -21,7 +21,7 @@ export class MySql {
     query(sql: string, values: any[] = [], callback: mysql.queryCallback): void {
         this.connection.query(sql, values, callback);
     }
-    
+
     close(): void {
         this.connection.end();
     }

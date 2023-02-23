@@ -1,5 +1,7 @@
 import { Switch, Route } from 'react-router-dom'
 import './App.css'
+import { useEffect } from 'react';
+import { dbGetir } from './pages/globalApi'
 import Navbar from './components/Navbar'
 import FirmaSabitleri from './pages/GenelBilgiler/FirmaSabitleri'
 import FirmaKarti from './pages/Kartlar/FirmaKarti'
@@ -7,9 +9,14 @@ import UlkeKarti from './pages/Kartlar/UlkeKarti'
 import MalzemeKartiTanimlamalari from './pages/MalzemeIslemleri/MalzemeKartiTanimlamalari'
 import MalzemeGiris from './pages/MalzemeIslemleri/MalzemeGiris'
 import MalzemeCikis from './pages/MalzemeIslemleri/MalzemeCikis'
-import Footer from './components/Footer'
+import Footer from './components/Footer';
+
 
 function App() {
+
+  useEffect(() => {
+    dbGetir().then(data => console.log(data))
+  }, [])
 
   return (
     <div className='h-full flex bg-gray-100'>

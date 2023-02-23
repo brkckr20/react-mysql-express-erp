@@ -47,7 +47,6 @@ const FirmaKarti = () => {
     }
 
     useEffect(() => {
-
         ulkeGetir().then(data => setUlkeListesi(data.data))
         cariGetir().then(data => setCariListesi(data.data))
     }, [])
@@ -59,9 +58,6 @@ const FirmaKarti = () => {
                     <div className='flex gap-1 my-2'>
                         <button title='Kaydet' onClick={formik.handleSubmit} type="submit" className='border p-2 rounded-lg hover:bg-slate-200'>
                             <Icon name="save" size={35} />
-                        </button>
-                        <button title='Temizle' onClick={formik.resetForm} type="button" className='border p-2 rounded-lg bg-white hover:bg-slate-100'>
-                            <Icon name="clear" size={35} />
                         </button>
                     </div>
                     <div className='flex'>

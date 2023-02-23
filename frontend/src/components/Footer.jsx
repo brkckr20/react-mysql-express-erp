@@ -13,6 +13,7 @@ const Footer = () => {
             <ul className='flex divide-x gap-x-2'>
                 <li className='text-white'>PORTAL v.1.0</li>
                 <li className='text-white pl-2'>{ctime}</li>
+                <li className='text-white pl-2'>Burak Çakır</li>
             </ul>
         </div>
     )

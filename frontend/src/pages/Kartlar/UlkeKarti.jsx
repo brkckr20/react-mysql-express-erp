@@ -1,14 +1,13 @@
 import React, { useEffect, useState } from 'react'
 import { useFormik } from 'formik';
 import Icon from '../../icons';
-import Modal from '../../components/Modal';
-import { ulkeKaydet, ulkeGetir } from './api'
+import { ulkeKaydet, ulkeGetir } from './api';
+import Bildirim, { basarili } from '../../components/Bildirim';
 
 const FirmaKarti = () => {
 
     const [ulkeListesi, setUlkeListesi] = useState([]);
     const [filterText, setFilterText] = useState("");
-    const [modalShow, setModalShow] = useState(false);
 
     const filtered = ulkeListesi.filter((item) => {
         return Object.keys(item).some((key) => {
@@ -24,26 +23,24 @@ const FirmaKarti = () => {
             KISA_KODU: '',
 
         },
-        onSubmit: (values, bag) => {
+        onSubmit: async (values, bag) => {
             if (!values.ULKE_ADI || !values.ORJ_ULKE_ADI || !values.ALAN_KODU || !values.KISA_KODU) {
                 alert("Uyarı! \nKayıt yapabilmek için tüm alanları doldurunuz.");
                 return false;
             }
-            ulkeKaydet(values);
+            const { message, code } = await ulkeKaydet(values);
+            if (code === 200) {
+                basarili(message);
+            }
             bag.resetForm();
         },
     });
 
-    const firmaSec = (item) => {
-        formik.values.ULKE = item.ULKE_ADI
-        formik.values.ULKE_KODU = item.KISA_KODU
-    }
-
     useEffect(() => {
-        ulkeGetir().then(data => {
-            setUlkeListesi(data)
+        ulkeGetir().then(({ data }) => {
+            setUlkeListesi(data);
         })
-    }, [])
+    }, [ulkeListesi])
 
     return (
         <>
@@ -52,9 +49,6 @@ const FirmaKarti = () => {
                     <div className='flex gap-1 my-2'>
                         <button title='Kaydet' onClick={formik.handleSubmit} type="submit" className='border p-2 rounded-lg hover:bg-slate-200'>
                             <Icon name="save" size={35} />
-                        </button>
-                        <button title='Temizle' onClick={formik.resetForm} type="button" className='border p-2 rounded-lg hover:bg-slate-200'>
-                            <Icon name="clear" size={35} />
                         </button>
                     </div>
                     <div className='flex'>
@@ -76,62 +70,46 @@ const FirmaKarti = () => {
                 </form>
             </div>
             <div className='border-t border-gray-200 px-2'>
-                <div className='flex gap-4 items-center justify-between my-2'>
+                <div className='flex gap-4 items-center justify-between my-2 border-b pb-2'>
                     <h1 className=' text-lg font-semibold'>Ülke Listesi</h1>
                     <div>
                         <input type="text" className='border outline-none pl-1' value={filterText} onChange={(e) => setFilterText(e.target.value)} />
                         <label className='ml-2'>Ara</label>
                     </div>
                 </div>
-                <table className='w-full'>
+                <table className=''>
                     <thead className='bg-green-200'>
-                        <tr className='py-2'>
-                            <td>ID #</td>
-                            <td>Ülke Adı</td>
-                            <td>Orj. Ülke Adı</td>
-                            <td>Alan Kodu</td>
-                            <td>Kısa Kod</td>
+                        <tr className='py-2 divide-x'>
+                            {/* <td className='w-[50px] text-center'>ID #</td> */}
+                            <td className='w-[200px] text-center'>Ülke Adı</td>
+                            <td className='w-[200px] text-center'>Orj. Ülke Adı</td>
+                            <td className='w-[100px] text-center'>Alan Kodu</td>
+                            <td className='w-[100px] text-center'>Kısa Kod</td>
+                            <td className='w-[100px] text-center'>İşlem</td>
                         </tr>
                     </thead>
                     <tbody>
                         {
                             filtered.map(item => (
-                                <tr key={item.ID} className='hover:bg-gray-200 duration-150 select-none cursor-pointer border'>
-                                    <td>{item.ID}</td>
-                                    <td>{item.ULKE_ADI}</td>
-                                    <td>{item.ORJ_ULKE_ADI}</td>
-                                    <td>{item.ALAN_KODU}</td>
-                                    <td>{item.KISA_KODU}</td>
+                                <tr key={item.ID} className='hover:bg-gray-200 duration-150 select-none cursor-pointer border divide-x'>
+                                    {/* <td className='w-[50px]  text-center'>{item.ID}</td> */}
+                                    <td className='w-[200px]  text-center'>{item.ULKE_ADI}</td>
+                                    <td className='w-[200px]  text-center'>{item.ORJ_ULKE_ADI}</td>
+                                    <td className='w-[50px]  text-center'>{item.ALAN_KODU}</td>
+                                    <td className='w-[50px]  text-center'>{item.KISA_KODU}</td>
+                                    <td className='w-[50px]'>
+                                        <div className='flex items-center justify-evenly'>
+                                            <button onClick={() => console.log("update button clicked")}><Icon name="update" /></button>
+                                            <button onClick={() => console.log("trash button clicked")}><Icon name="trash" /></button>
+                                        </div>
+                                    </td>
                                 </tr>
                             ))
                         }
                     </tbody>
                 </table>
             </div>
-            <Modal title="Ülke Seçiniz" modalShow={modalShow} setModalShow={setModalShow}>
-                <table className='w-full'>
-                    <thead className='bg-blue-200'>
-                        <tr className='py-2'>
-                            <td>Ülke Adı</td>
-                            <td>Ülke Kodu</td>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {
-                            ulkeListesi.map(item => (
-                                <tr key={item.ID} className='hover:bg-gray-200 duration-150 select-none cursor-pointer'
-                                    onDoubleClick={() => {
-                                        firmaSec(item)
-                                        setModalShow(false)
-                                    }}>
-                                    <td>{item.ULKE_ADI}</td>
-                                    <td>{item.KISA_KODU}</td>
-                                </tr>
-                            ))
-                        }
-                    </tbody>
-                </table>
-            </Modal>
+            <Bildirim />
         </>
     )
 }

@@ -37,3 +37,10 @@ export interface Cari {
     TELEFON: string;
     GIB_MAIL: string;
 }
+
+export interface Ulke{
+    ULKE_ADI: string;
+    ORJ_ULKE_ADI: string;
+    ALAN_KODU: string;
+    KISA_KODU: string;
+}
