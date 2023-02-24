@@ -2,16 +2,20 @@ import React, { useEffect, useState } from 'react'
 import { useFormik } from 'formik';
 import Icon from '../../icons';
 import Modal from '../../components/Modal';
-import { cariKaydet, ulkeGetir } from './api'
-import { cariGetir } from '../globalApi'
+import CariTipiModal from '../../components/Modal';
+import { cariKaydet, ulkeGetir, cariTipiGetir } from './api'
+import { cariGetir } from '../globalApi';
+import Bildirim, { basarili } from '../../components/Bildirim';
 
 const FirmaKarti = () => {
 
     const [malzemeListesi, setMalzemeListesi] = useState([]);
     const [ulkeListesi, setUlkeListesi] = useState([]);
     const [cariListesi, setCariListesi] = useState([]);
+    const [cariTipiListesi, setCariTipiListesi] = useState([]);
     const [filterText, setFilterText] = useState("");
     const [modalShow, setModalShow] = useState(false);
+    const [cariTipiModal, setCariTipiModal] = useState(false);
 
     const filtered = malzemeListesi.filter((item) => {
         return Object.keys(item).some((key) => {
@@ -34,9 +38,11 @@ const FirmaKarti = () => {
             VERGI_NO: '',
             TELEFON: '',
             GIB_MAIL: '',
+            CARI_TIPI: '',
         },
-        onSubmit: (values, bag) => {
-            cariKaydet(values);
+        onSubmit: async (values, bag) => {
+            const result = await cariKaydet(values);
+            basarili(result.message);
             bag.resetForm();
         },
     });
@@ -46,10 +52,15 @@ const FirmaKarti = () => {
         formik.values.ULKE_KODU = item.KISA_KODU
     }
 
+    const cariTipiSec = (item) => {
+        formik.values.CARI_TIPI = item.CARI_TIPI
+    }
+
     useEffect(() => {
         ulkeGetir().then(data => setUlkeListesi(data.data))
         cariGetir().then(data => setCariListesi(data.data))
-    }, [])
+        cariTipiGetir().then(data => setCariTipiListesi(data.data))
+    }, [cariListesi])
 
     return (
         <div className='bg-slate-300 w-full h-full'>
@@ -115,13 +126,20 @@ const FirmaKarti = () => {
                         <label className='inline-block max-w-[200px] w-full'>Gib-Mail : </label>
                         <input value={formik.values.GIB_MAIL} onChange={formik.handleChange} name="GIB_MAIL" className='w-full border outline-none px-1' type="text" />
                     </div>
+                    <div className='flex'>
+                        <label className='inline-block max-w-[200px] w-full'>Cari Tipi : </label>
+                        <div className='flex border'>
+                            <input value={formik.values.CARI_TIPI} onChange={formik.handleChange} name="CARI_TIPI" className='w-full outline-none px-1' type="text" />
+                            <button type='button' className='bg-white' onClick={() => setCariTipiModal(true)}><Icon name="dots" /></button>
+                        </div>
+                    </div>
 
                 </form>
             </div>
             <div className='px-2'>
                 <h1 className='font-semibold'>Mevcut Firma Listesi</h1>
-                <table className='w-full'>
-                    <thead className='bg-blue-300 '>
+                <table className=''>
+                    <thead className='bg-blue-300 border'>
                         <tr>
                             <td>Firma Kodu</td>
                             <td>Firma Adı</td>
@@ -132,14 +150,14 @@ const FirmaKarti = () => {
                     <tbody>
                         {
                             cariListesi.map(item => (
-                                <tr key={item.ID} className='hover:bg-gray-200 cursor-pointer' onContextMenu={(e) => {
+                                <tr key={item.ID} className='hover:bg-gray-200 cursor-pointer border divide-x' onContextMenu={(e) => {
                                     e.preventDefault();
                                     console.log(e)
                                 }}>
-                                    <td>{item.FIRMA_KODU}</td>
-                                    <td>{item.FIRMA_UNVANI}</td>
-                                    <td>{item.ADRES1}</td>
-                                    <td>{item.ULKE}</td>
+                                    <td className={`${!item.FIRMA_KODU && 'bg-red-600'}`}>{item.FIRMA_KODU}</td>
+                                    <td className={`${!item.FIRMA_UNVANI && 'bg-red-600'}`}>{item.FIRMA_UNVANI}</td>
+                                    <td className={`${!item.ADRES1 && 'bg-red-600'}`}>{item.ADRES1}</td>
+                                    <td className={`${!item.ULKE && 'bg-red-600'}`}>{item.ULKE}</td>
                                 </tr>
                             ))
                         }
@@ -170,6 +188,29 @@ const FirmaKarti = () => {
                     </tbody>
                 </table>
             </Modal>
+            <CariTipiModal title="Cari Tipi Seçiniz" modalShow={cariTipiModal} setModalShow={setCariTipiModal}>
+                <table className=''>
+                    <thead className='bg-blue-200'>
+                        <tr className='py-2'>
+                            <td>Cari Tipi</td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {
+                            cariTipiListesi.map(item => (
+                                <tr key={item.CARI_TIPI} className='hover:bg-gray-200 duration-150 select-none cursor-pointer'
+                                    onDoubleClick={() => {
+                                        cariTipiSec(item);
+                                        setCariTipiModal(false)
+                                    }}>
+                                    <td>{item.CARI_TIPI}</td>
+                                </tr>
+                            ))
+                        }
+                    </tbody>
+                </table>
+            </CariTipiModal>
+            <Bildirim />
         </div>
     )
 }

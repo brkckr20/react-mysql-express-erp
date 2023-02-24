@@ -15,7 +15,7 @@ import Footer from './components/Footer';
 function App() {
 
   useEffect(() => {
-    dbGetir().then(data => console.log(data))
+    dbGetir().then(data => localStorage.setItem("dbName", JSON.stringify(data.data[0])))
   }, [])
 
   return (

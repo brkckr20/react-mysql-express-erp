@@ -11,6 +11,15 @@ export const cariKaydet = async (values) => {
         console.log(error);
     }
 }
+
+export const cariTipiGetir = async () => {
+    try {
+        const { data } = await axios.get(`${API}/cari/tipi`);
+        return data;
+    } catch (error) {
+        console.log(error);
+    }
+}
 export const ulkeGetir = async () => {
     try {
         const { data } = await axios.get(`${API}/ulke`);
