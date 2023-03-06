@@ -11,11 +11,29 @@ const Footer = () => {
     setInterval(UpdateTime);
 
     const [db, setDb] = useState({});
+    const [isCapsLockOn, setIsCapsLockOn] = useState(false);
+
 
     useEffect(() => {
         const dbName = JSON.parse(localStorage.getItem("dbName"));
         setDb(dbName);
     }, [])
+
+    useEffect(() => {
+        function handleKeyDown(event) {
+            if (event.getModifierState('CapsLock')) {
+                setIsCapsLockOn(true);
+            } else {
+                setIsCapsLockOn(false);
+            }
+        }
+
+        window.addEventListener('keydown', handleKeyDown);
+
+        return () => {
+            window.removeEventListener('keydown', handleKeyDown);
+        };
+    }, []);
 
     return (
         <div className='absolute left-0 bottom-0 right-0 bg-slate-800 px-2'>
@@ -24,6 +42,7 @@ const Footer = () => {
                 <li className='text-white pl-2 w-[80px] text-center'>{ctime}</li>
                 <li className='text-white pl-2'>Burak Çakır</li>
                 <li className='text-white pl-2'>Database : {(db.db)?.toUpperCase()}</li>
+                <li className='text-white pl-2'>Capslock : {isCapsLockOn ? 'AÇIK' : 'KAPALI'}</li>
             </ul>
         </div>
     )

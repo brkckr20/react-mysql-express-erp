@@ -17,14 +17,14 @@ export interface ResponseDatas {
 }
 
 export interface ResponseDataSuccessfully {
-    message: string;
-    code: 200;
-    data : []
+    message?: string;
+    code?: 200;
+    data?: []
 }
 
 export interface Cari {
     FIRMA_KODU: string;
-    FIRMA_UNVANI: string;
+    FIRMA_ADI1: string;
     ADRES1: string;
     ADRES2: string;
     ULKE: string;
@@ -36,6 +36,7 @@ export interface Cari {
     VERGI_NO: string;
     TELEFON: string;
     GIB_MAIL: string;
+    CARI_TIPI: string;
 }
 
 export interface Ulke{
@@ -43,4 +44,11 @@ export interface Ulke{
     ORJ_ULKE_ADI: string;
     ALAN_KODU: string;
     KISA_KODU: string;
+}
+
+export interface Birim{
+    BIRIM_ADI: string;
+    KISA_KODU: string;
+    DEPO_ADI?: string;
+    YENI_KAYITMI: boolean;
 }

@@ -6,7 +6,7 @@ const mysql = new MySql();
 export const DbNameGetir : Handler = (req,res) => {
     mysql.connect();
     try {
-        mysql.query("SELECT DATABASE();", [], (error, result, fields) => {
+        mysql.query("SELECT DATABASE() as db;", [], (error, result, fields) => {
             if (error) {
                 console.log("error var");
                 return;

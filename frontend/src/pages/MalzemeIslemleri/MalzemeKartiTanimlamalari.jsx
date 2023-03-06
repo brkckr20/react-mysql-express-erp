@@ -40,6 +40,7 @@ const MalzemeKartiTanimlamalari = () => {
         formik.values.TEDARIKCI_ADI = item.FIRMA_UNVANI
     }
 
+
     useEffect(() => {
         getData().then(val => setMalzemeListesi(val.data))
         birimGetir().then(val => setBirimListesi(val.data))

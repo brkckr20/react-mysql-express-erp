@@ -10,6 +10,7 @@ import MalzemeKartiTanimlamalari from './pages/MalzemeIslemleri/MalzemeKartiTani
 import MalzemeGiris from './pages/MalzemeIslemleri/MalzemeGiris'
 import MalzemeCikis from './pages/MalzemeIslemleri/MalzemeCikis'
 import Footer from './components/Footer';
+import BirimKodlama from './pages/Kodlama/BirimKodlama';
 
 
 function App() {
@@ -40,6 +41,10 @@ function App() {
           </Route>
           <Route exact path="/malzeme-cikis">
             <MalzemeCikis />
+          </Route>
+          {/* kodlama menüsü */}
+          <Route exact path="/birim-kodlama">
+            <BirimKodlama />
           </Route>
           <Route exact path="/">
             <div>Anasayfa</div>

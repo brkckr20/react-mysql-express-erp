@@ -4,6 +4,7 @@ import ListElement from './ListElement';
 import { genel } from '../process/Genel'
 import { depoYonetimi } from '../process/DepoYonetimi'
 import { kartlar } from '../process/Kartlar';
+import { kodlama } from '../process/Kodlama';
 import { Link } from 'react-router-dom';
 
 const Navbar = () => {
@@ -17,6 +18,7 @@ const Navbar = () => {
                 <ListElement iconName="home" title="Genel Bilgiler" subTitles={genel} />
                 <ListElement iconName="wareHouse" title="Sarf Malzeme İşlemleri" subTitles={depoYonetimi} />
                 <ListElement iconName="process" title="Kartlar" subTitles={kartlar} />
+                <ListElement iconName="code" title="Kodlama" subTitles={kodlama} />
             </div>
         </nav>
     )

@@ -22,3 +22,12 @@ export const dbGetir = async () => {
         console.log(error);
     }
 }
+
+export const birimGetir = async () => {
+    try {
+        const { data } = await axios.get(`${API}/birim`);
+        return data;
+    } catch (error) {
+        console.log(error)
+    }
+}
