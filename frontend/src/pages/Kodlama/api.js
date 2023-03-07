@@ -11,3 +11,12 @@ export const birimKaydet = async (values) => {
         console.log(error);
     }
 }
+
+export const birimSil = async (id) => {
+    try {
+        const { data } = await axios.delete(`${API}/birim/${id}`);
+        return data;
+    } catch (error) {
+        console.log(error);
+    }
+}

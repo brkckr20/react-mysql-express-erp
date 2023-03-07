@@ -47,6 +47,7 @@ export interface Ulke{
 }
 
 export interface Birim{
+    ID?: number;
     BIRIM_ADI: string;
     KISA_KODU: string;
     DEPO_ADI?: string;

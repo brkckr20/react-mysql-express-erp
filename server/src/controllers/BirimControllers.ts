@@ -26,7 +26,7 @@ export const BirimGetir : Handler = (req,res) => {
 export const BirimKaydet: Handler = (req, res) => {
     mysql.connect();
     try {
-        const { BIRIM_ADI,KISA_KODU,DEPO_ADI,YENI_KAYITMI}: Birim = req.body;
+        const { BIRIM_ADI,KISA_KODU,DEPO_ADI,YENI_KAYITMI,ID}: Birim = req.body;
         if (YENI_KAYITMI) {
             const sorgu = `INSERT INTO birim 
                     (AD,KISA_KOD,DEPO)
@@ -45,12 +45,46 @@ export const BirimKaydet: Handler = (req, res) => {
                 message :"Birim kayıt işlemi başarılı."
             } as ResponseDataSuccessfully)
         })
-        } else {
-            //GÜNCELLEME KODLARI GELİCEK
+        } else if(!YENI_KAYITMI) {
+            const sorgu = `UPDATE birim set ad='${BIRIM_ADI}', kisa_kod='${KISA_KODU}',depo='${DEPO_ADI}' WHERE id = ${ID}`;
+            mysql.query(sorgu, [], (error, result, fields) => {
+                if (error) {
+                    console.log(error);
+                    return;
+                }
+                res.send({
+                    code: 200,
+                    message :"Birim güncelleme işlemi başarılı."
+                } as ResponseDataSuccessfully)
+            })
+            console.log(req.body);
+            
         }
     } catch (error) {
         console.log(error);
         
+    }
+    mysql.close();
+}
+
+export const BirimSil: Handler = (req, res) => {
+    mysql.connect();
+    const { id } = req.params;
+    try {
+        const sorgu = `DELETE from birim WHERE id = ${id}`;
+        mysql.query(sorgu, [], (error, result, fields) => {
+            if (error) {
+                console.log(error);
+                return;
+            }
+            res.send({
+                code: 200,
+                message :"Birim silme işlemi başarılı."
+            } as ResponseDataSuccessfully)
+        })
+        console.log(req.body);       
+    } catch (error) {
+        console.log(error);
     }
     mysql.close();
 }
