@@ -104,7 +104,7 @@ const BirimKodlama = () => {
                 </form>
             </div>
             <div className='border-t border-gray-200 px-2'>
-                <div className='flex gap-4 items-center justify-between my-2 border-b pb-2'>
+                <div className='flex gap-4 items-center justify-between my-2 border-b py-1 bg-gray-200'>
                     <h1 className=' text-lg font-semibold'>Birim Listesi</h1>
                     <div>
                         <input type="text" className='border outline-none pl-1' value={filterText} onChange={(e) => setFilterText(e.target.value)} />

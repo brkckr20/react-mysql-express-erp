@@ -3,6 +3,7 @@ import { API_URL } from '../../config/api'
 // const API = "http://localhost:3001";
 const API = API_URL
 
+// malzeme karti getir
 export const getData = async () => {
     try {
         const { data } = await axios.get(`${API}/malzemekarti`);
@@ -12,6 +13,7 @@ export const getData = async () => {
     }
 }
 
+// malzeme karti kaydet
 export const setData = async (values) => {
     try {
         const { data } = await axios.post(`${API}/malzemekarti`, values);
@@ -33,7 +35,7 @@ export const malzemeGirisKaydet = async (values, kalem, tip) => {
 
 export const malzemeGirisGetir = async (depoTipi) => {
     try {
-        const { data } = await axios.get(`${API}/malzemedepo/${depoTipi}`);
+        const { data } = await axios.get(`${API}/malzemedepo/giris/${depoTipi}`);
         return data;
     } catch (error) {
         console.log(error);
@@ -100,16 +102,6 @@ export const birimGetir = async () => {
 export const cariGetir = async () => {
     try {
         const { data } = await axios.get(`${API}/cari`);
-        return data;
-    } catch (error) {
-        console.log(error);
-    }
-}
-
-/* kalem islem getir */
-export const kalemIslemGetir = async (depoAdi) => {
-    try {
-        const { data } = await axios.get(`${API}/kalem-islem/${depoAdi}`);
         return data;
     } catch (error) {
         console.log(error);

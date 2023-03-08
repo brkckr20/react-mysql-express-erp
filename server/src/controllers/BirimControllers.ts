@@ -6,7 +6,7 @@ const mysql = new MySql();
 export const BirimGetir : Handler = (req,res) => {
     mysql.connect();
     try {
-        mysql.query("SELECT * FROM birim", [], (error, result, fields) => {
+        mysql.query("SELECT * FROM birim ORDER BY ad", [], (error, result, fields) => {
             if (error) {
                 console.log("error var");
                 return;

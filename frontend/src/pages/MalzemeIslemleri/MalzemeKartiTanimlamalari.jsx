@@ -52,11 +52,8 @@ const MalzemeKartiTanimlamalari = () => {
             <div className='p-2 max-w-md'>
                 <form action="">
                     <div className='flex gap-1 my-2'>
-                        <button title='Kaydet' onClick={formik.handleSubmit} type="submit" className='border p-2 rounded-lg hover:bg-slate-200'>
+                        <button title='Kaydet' onClick={formik.handleSubmit} type="submit" className='border p-2 rounded-lg hover:bg-slate-200 disabled:cursor-not-allowed disabled:bg-slate-300'>
                             <Icon name="save" size={35} />
-                        </button>
-                        <button title='Temizle' onClick={formik.resetForm} type="button" className='border p-2 rounded-lg hover:bg-slate-200'>
-                            <Icon name="clear" size={35} />
                         </button>
                     </div>
                     <div className='flex'>

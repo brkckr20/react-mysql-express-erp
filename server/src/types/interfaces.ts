@@ -53,3 +53,9 @@ export interface Birim{
     DEPO_ADI?: string;
     YENI_KAYITMI: boolean;
 }
+
+export interface KalemIslem{
+    ID: number,
+    KALEM_ISLEM: string;
+    DEPO_ADI: string;
+}

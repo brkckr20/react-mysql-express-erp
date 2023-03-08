@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react'
 import { useFormik } from 'formik';
 import Icon from '../../icons';
-import { getData, birimGetir, cariGetir, malzemeGirisKaydet, malzemeGirisGetir, malzemeGirisOncekiKayit, malzemeGirisSonrakiKayit, kalemIslemGetir, malzemeDepoListeDetay, malzemeDepoGirisTekKayitGetir } from './api';
+import { getData, malzemeGirisKaydet, malzemeGirisGetir, malzemeGirisOncekiKayit, malzemeGirisSonrakiKayit, malzemeDepoListeDetay, malzemeDepoGirisTekKayitGetir } from './api';
+import { kalemIslemGetir, cariGetir, birimGetir } from '../globalApi';
 import Modal from '../../components/Modal';
 import ListModal from '../../components/Modal';
 import globalFilter from '../../utils/globalFilter';
@@ -65,10 +66,10 @@ const MalzemeGiris = () => {
     }
 
     useEffect(() => {
-        getData().then(val => setMalzemeListesi(val))
-        birimGetir().then(val => setBirimListesi(val))
-        cariGetir().then(val => setCariListesi(val))
-        kalemIslemGetir(formik.values.ISLEM_CINSI).then(val => setKalemIslemListesi(val))
+        getData().then(val => setMalzemeListesi(val.data));
+        birimGetir().then(val => setBirimListesi(val.data));
+        cariGetir().then(val => setCariListesi(val.data))
+        kalemIslemGetir(formik.values.ISLEM_CINSI).then(val => setKalemIslemListesi(val.data))
     }, [])
 
     const handleBirimUpdate = async (event, kod) => {
@@ -89,9 +90,9 @@ const MalzemeGiris = () => {
     }
 
     const kayitGetir = async (depoTipi) => {
-        const veri = await malzemeGirisGetir(depoTipi);
-        setGosterilenKayitId(veri[0].ID)
-        setOncekiKayit(veri);
+        const { data } = await malzemeGirisGetir(depoTipi);
+        setGosterilenKayitId(data[0].ID)
+        setOncekiKayit(data);
         setSonKayitVar(false);
         setIlkKayitVar(true);
     }
@@ -99,7 +100,7 @@ const MalzemeGiris = () => {
     const oncekiKayitGetir = async (depoTipi, kayitNo) => {
         const veri = await malzemeGirisOncekiKayit(depoTipi, kayitNo);
         /* ilk kayıt yok ise */
-        if (veri.code === 400) {
+        if (veri.data.code === 400) {
             setIlkKayitVar(false);
             return;
         }
@@ -108,35 +109,35 @@ const MalzemeGiris = () => {
         setSonKayitVar(true)
     }
 
-    const sonrakiKayitGetir = async (depoTipi, kayitNo) => {
-        const veri = await malzemeGirisSonrakiKayit(depoTipi, kayitNo);
-        /* SON kayıt yok ise */
-        if (veri.code === 400) {
-            setSonKayitVar(false);
-            return;
-        }
-        setGosterilenKayitId(veri[0].ID)
-        setOncekiKayit(veri);
-        setIlkKayitVar(true);
-    }
+    // const sonrakiKayitGetir = async (depoTipi, kayitNo) => {
+    //     const veri = await malzemeGirisSonrakiKayit(depoTipi, kayitNo);
+    //     /* SON kayıt yok ise */
+    //     if (veri.code === 400) {
+    //         setSonKayitVar(false);
+    //         return;
+    //     }
+    //     setGosterilenKayitId(veri[0].ID)
+    //     setOncekiKayit(veri);
+    //     setIlkKayitVar(true);
+    // }
 
-    const listeDetayGetir = async (depoTipi) => {
-        setListModalShow(true)
-        const veri = await malzemeDepoListeDetay(depoTipi);
-        setListeDetay(veri);
-    }
+    // const listeDetayGetir = async (depoTipi) => {
+    //     setListModalShow(true)
+    //     const veri = await malzemeDepoListeDetay(depoTipi);
+    //     setListeDetay(veri);
+    // }
 
     const yeniFisOlustur = () => {
         setOncekiKayit([]);
     }
 
-    const idYeGoreKayitGetir = async (id) => {
-        setSonKayitVar(true);
-        const veri = await malzemeDepoGirisTekKayitGetir(id);
-        setGosterilenKayitId(veri[0].ID)
-        setOncekiKayit(veri);
-        setListModalShow(false);
-    }
+    // const idYeGoreKayitGetir = async (id) => {
+    //     setSonKayitVar(true);
+    //     const veri = await malzemeDepoGirisTekKayitGetir(id);
+    //     setGosterilenKayitId(veri[0].ID)
+    //     setOncekiKayit(veri);
+    //     setListModalShow(false);
+    // }
 
     return (
         <>
@@ -149,7 +150,7 @@ const MalzemeGiris = () => {
                         <button title='Kaydet' onClick={formik.handleSubmit} type="submit" className='border p-2 rounded-lg hover:bg-slate-200'>
                             <Icon name="save" size={35} />
                         </button>
-                        <button title='Güncelle' className='border p-2 rounded-lg hover:bg-slate-200'>
+                        <button title='Güncelle' type='button' className='border p-2 rounded-lg hover:bg-slate-200'>
                             <Icon name="update" size={35} />
                         </button>
                         <button title='Geri' type="button" onClick={() => oncekiKayitGetir("giris", gosterilenKayitId)} disabled={ilkKayitVar ? false : true} className='border p-2 rounded-lg hover:bg-slate-200 disabled:bg-slate-300 disabled:cursor-not-allowed'>
@@ -235,7 +236,19 @@ const MalzemeGiris = () => {
                                                             onChange={(e) => handleBirimUpdate(e, i)}
                                                             onFocus={() => handleFocus(i)}
                                                         /></td>
-                                                        <td className='w-[200px]'><input type="text" placeholder='Birim' value={i.BIRIM} disabled="disabled" /></td>
+                                                        {/* <td className='w-[200px]'>
+                                                            <input type="text" placeholder='Birim' value={i.BIRIM} disabled="disabled" />
+                                                        </td> */}
+                                                        <td className='w-[200px]'>
+                                                            <select className='w-[200px]' name="birim" id="">
+                                                                <option value="">Seçiniz</option>
+                                                                {
+                                                                    birimListesi.map(item => (
+                                                                        <option key={item.ad} value={item.ad}>{item.ad}</option>
+                                                                    ))
+                                                                }
+                                                            </select>
+                                                        </td>
                                                     </tr>
                                                 ))
                                                 : oncekiKayit.map((i, k) => (
