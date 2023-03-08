@@ -53,13 +53,21 @@ const BirimKodlama = () => {
     }
 
     const sil = async (id) => {
-        const response = await birimSil(id);
-        if (response.code === 200) {
-            bilgi(response.message);
-            return;
+        if (confirm("Silenecek\nEmin misiniz?\nBu işlem geri alınamaz!!")) {
+            const response = await birimSil(id);
+            if (response.code === 200) {
+                bilgi(response.message);
+                return;
+            }
         }
     }
 
+    const yeni = () => {
+        formik.values.BIRIM_ADI = "";
+        formik.values.KISA_KODU = "";
+        formik.values.DEPO_ADI = "";
+        formik.values.YENI_KAYITMI = true;
+    }
 
     useEffect(() => {
         birimGetir().then(data => {
@@ -72,7 +80,10 @@ const BirimKodlama = () => {
             <div className='p-2 max-w-md'>
                 <form action="">
                     <div className='flex gap-1 my-2'>
-                        <button title='Kaydet' onClick={formik.handleSubmit} type="submit" className='border p-2 rounded-lg hover:bg-slate-200'>
+                        <button title='Yeni' type="button" onClick={yeni} className='border p-2 rounded-lg hover:bg-slate-200'>
+                            <Icon name="new" size={35} />
+                        </button>
+                        <button title='Kaydet' onClick={formik.handleSubmit} disabled={(!formik.values.BIRIM_ADI || !formik.values.KISA_KODU) && true} type="submit" className='border p-2 rounded-lg hover:bg-slate-200 disabled:cursor-not-allowed disabled:bg-slate-300'>
                             <Icon name="save" size={35} />
                         </button>
                         <ExcelExport excelData={birimListesi} fileName="Birim Listesi" />
