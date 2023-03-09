@@ -59,3 +59,12 @@ export interface KalemIslem{
     KALEM_ISLEM: string;
     DEPO_ADI: string;
 }
+
+export interface MalzemeDepo{
+    ID?: number;
+    ISLEM_CINSI?: string;
+    TARIH?: string;
+    TEDARIKCI_KODU?: string;
+    TEDARIKCI_ADI?: string;
+    FATURA_NO?: string;
+}

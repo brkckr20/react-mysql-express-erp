@@ -23,7 +23,7 @@ export const setData = async (values) => {
     }
 }
 
-export const malzemeGirisKaydet = async (values, kalem, tip) => {
+export const malzemeGirisKaydet = async (depoAdi, values, kalem, tip) => {
     try {
         const { data } = await axios.post(`${API}/malzemedepo/${tip}`, { values, kalem });
         return data;

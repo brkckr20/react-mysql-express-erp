@@ -42,3 +42,35 @@ export const kalemIslemGetir = async (depoAdi) => {
         console.log(error);
     }
 }
+
+
+export const oncekiKayitGetir = async (depoAdi, depoTipi, id) => {
+    //depo tipi - giris mi cikis mi
+    //depo adi - malzemegiris
+    try {
+        const { data } = await axios.get(`${API}/${depoAdi}/${depoTipi}/onceki/${id}`);
+        return data;
+    } catch (error) {
+        console.log(error);
+    }
+}
+export const sonrakiKayitGetir = async (depoAdi, depoTipi, id) => {
+    //depo tipi - giris mi cikis mi
+    //depo adi - malzemegiris
+    try {
+        const { data } = await axios.get(`${API}/${depoAdi}/${depoTipi}/sonraki/${id}`);
+        return data;
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+
+export const depoKaydet = async (depoAdi, values, kalem, tip) => {
+    try {
+        const { data } = await axios.post(`${API}/${depoAdi}/${tip}`, { values, kalem });
+        return data;
+    } catch (error) {
+        console.log(error.message);
+    }
+}

@@ -1,8 +1,10 @@
 import express from 'express';
-import { MalzemeDepoGetir } from '../controllers/MalzemeDepoControllers';
+import { MalzemeDepoGetir, MalzemeDepoKaydet, MalzemeDepoOncekiKayitGetir, MalzemeDepoSonrakiKayitGetir } from '../controllers/MalzemeDepoControllers';
 const router = express.Router();
 
 router.get("/giris/:depoAdi", MalzemeDepoGetir);
-router.get("/giris/oncekikayit/:depoAdi", MalzemeDepoGetir);
+router.get("/:tip/onceki/:id", MalzemeDepoOncekiKayitGetir);
+router.get("/:tip/sonraki/:id", MalzemeDepoSonrakiKayitGetir);
+router.post("/:tip", MalzemeDepoKaydet);
 
 export default router;

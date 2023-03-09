@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react'
 import { useFormik } from 'formik';
 import Icon from '../../icons';
-import { getData, malzemeGirisKaydet, malzemeGirisGetir, malzemeGirisOncekiKayit, malzemeGirisSonrakiKayit, malzemeDepoListeDetay, malzemeDepoGirisTekKayitGetir } from './api';
-import { kalemIslemGetir, cariGetir, birimGetir } from '../globalApi';
+import { getData, malzemeGirisKaydet, malzemeGirisGetir, malzemeDepoListeDetay, malzemeDepoGirisTekKayitGetir } from './api';
+import { kalemIslemGetir, cariGetir, birimGetir, oncekiKayitGetir, sonrakiKayitGetir, depoKaydet } from '../globalApi';
 import Modal from '../../components/Modal';
 import ListModal from '../../components/Modal';
 import globalFilter from '../../utils/globalFilter';
@@ -56,7 +56,7 @@ const MalzemeGiris = () => {
     const formik = useFormik({
         initialValues,
         onSubmit: async (values) => {
-            await malzemeGirisKaydet(values, kalem, "kaydet");
+            await depoKaydet("malzemedepo", values, kalem, "giris");
         },
     });
 
@@ -97,35 +97,36 @@ const MalzemeGiris = () => {
         setIlkKayitVar(true);
     }
 
-    const oncekiKayitGetir = async (depoTipi, kayitNo) => {
-        const veri = await malzemeGirisOncekiKayit(depoTipi, kayitNo);
+    const eskiKayitGetir = async (depoAdi, depoTipi, kayitNo) => {
+        const veri = await oncekiKayitGetir(depoAdi, depoTipi, kayitNo);
         /* ilk kayıt yok ise */
-        if (veri.data.code === 400) {
+        if (veri.code === 400) {
             setIlkKayitVar(false);
             return;
         }
-        setGosterilenKayitId(veri[0].ID);
-        setOncekiKayit(veri);
+        setGosterilenKayitId(veri.data[0].ID);
+        setOncekiKayit(veri.data);
         setSonKayitVar(true)
     }
 
-    // const sonrakiKayitGetir = async (depoTipi, kayitNo) => {
-    //     const veri = await malzemeGirisSonrakiKayit(depoTipi, kayitNo);
-    //     /* SON kayıt yok ise */
-    //     if (veri.code === 400) {
-    //         setSonKayitVar(false);
-    //         return;
-    //     }
-    //     setGosterilenKayitId(veri[0].ID)
-    //     setOncekiKayit(veri);
-    //     setIlkKayitVar(true);
-    // }
+    const sonrakiKayit = async (depoAdi, depoTipi, kayitNo) => {
+        const veri = await sonrakiKayitGetir(depoAdi, depoTipi, kayitNo);
+        console.log(veri);
+        /* SON kayıt yok ise */
+        if (veri.code === 400) {
+            setSonKayitVar(false);
+            return;
+        }
+        setGosterilenKayitId(veri.data[0].ID)
+        setOncekiKayit(veri.data);
+        setIlkKayitVar(true);
+    }
 
-    // const listeDetayGetir = async (depoTipi) => {
-    //     setListModalShow(true)
-    //     const veri = await malzemeDepoListeDetay(depoTipi);
-    //     setListeDetay(veri);
-    // }
+    const listeDetayGetir = async (depoTipi) => {
+        setListModalShow(true)
+        // const veri = await malzemeDepoListeDetay(depoTipi);
+        // setListeDetay(veri);
+    }
 
     const yeniFisOlustur = () => {
         setOncekiKayit([]);
@@ -153,10 +154,10 @@ const MalzemeGiris = () => {
                         <button title='Güncelle' type='button' className='border p-2 rounded-lg hover:bg-slate-200'>
                             <Icon name="update" size={35} />
                         </button>
-                        <button title='Geri' type="button" onClick={() => oncekiKayitGetir("giris", gosterilenKayitId)} disabled={ilkKayitVar ? false : true} className='border p-2 rounded-lg hover:bg-slate-200 disabled:bg-slate-300 disabled:cursor-not-allowed'>
+                        <button title='Geri' type="button" onClick={() => eskiKayitGetir("malzemedepo", "giris", gosterilenKayitId)} disabled={ilkKayitVar ? false : true} className='border p-2 rounded-lg hover:bg-slate-200 disabled:bg-slate-300 disabled:cursor-not-allowed'>
                             <Icon name="arrowBack" size={35} />
                         </button>
-                        <button title='İleri' type="button" onClick={() => sonrakiKayitGetir("giris", gosterilenKayitId)} disabled={sonKayitVar ? false : true} className='border p-2 rounded-lg hover:bg-slate-200 disabled:bg-slate-300 disabled:cursor-not-allowed'>
+                        <button title='İleri' type="button" onClick={() => sonrakiKayit("malzemedepo", "giris", gosterilenKayitId)} disabled={sonKayitVar ? false : true} className='border p-2 rounded-lg hover:bg-slate-200 disabled:bg-slate-300 disabled:cursor-not-allowed'>
                             <Icon name="arrowNext" size={35} />
                         </button>
                         <button title='Liste' type="button" onClick={() => listeDetayGetir("giris")} className='border p-2 rounded-lg hover:bg-slate-200 disabled:bg-slate-300 disabled:cursor-not-allowed'>
