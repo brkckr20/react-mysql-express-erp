@@ -11,10 +11,10 @@ import MalzemeGiris from './pages/MalzemeIslemleri/MalzemeGiris'
 import MalzemeCikis from './pages/MalzemeIslemleri/MalzemeCikis'
 import Footer from './components/Footer';
 import BirimKodlama from './pages/Kodlama/BirimKodlama';
+import Anasayfa from './pages/Anasayfa';
 
 
 function App() {
-
   useEffect(() => {
     dbGetir().then(data => localStorage.setItem("dbName", JSON.stringify(data.data[0])))
   }, [])
@@ -47,7 +47,7 @@ function App() {
             <BirimKodlama />
           </Route>
           <Route exact path="/">
-            <div>Anasayfa</div>
+            <Anasayfa />
           </Route>
         </Switch>
       </div>

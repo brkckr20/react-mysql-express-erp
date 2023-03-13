@@ -152,6 +152,21 @@ const PdfIcon = ({ size }) => {
     )
 }
 
+
+const FullScreenIcon = ({ size }) => {
+    return (
+        <svg stroke="currentColor" fill="currentColor" strokeWidth="0" viewBox="0 0 16 16" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M1.5 1a.5.5 0 0 0-.5.5v4a.5.5 0 0 1-1 0v-4A1.5 1.5 0 0 1 1.5 0h4a.5.5 0 0 1 0 1h-4zM10 .5a.5.5 0 0 1 .5-.5h4A1.5 1.5 0 0 1 16 1.5v4a.5.5 0 0 1-1 0v-4a.5.5 0 0 0-.5-.5h-4a.5.5 0 0 1-.5-.5zM.5 10a.5.5 0 0 1 .5.5v4a.5.5 0 0 0 .5.5h4a.5.5 0 0 1 0 1h-4A1.5 1.5 0 0 1 0 14.5v-4a.5.5 0 0 1 .5-.5zm15 0a.5.5 0 0 1 .5.5v4a1.5 1.5 0 0 1-1.5 1.5h-4a.5.5 0 0 1 0-1h4a.5.5 0 0 0 .5-.5v-4a.5.5 0 0 1 .5-.5z"></path></svg>
+
+    )
+}
+const UnitIcon = ({ size, fill, ...rest }) => {
+    return (
+        <svg xmlns="http://www.w3.org/2000/svg" fill={fill} viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" width={size} height={size} {...rest}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 6h9.75M10.5 6a1.5 1.5 0 11-3 0m3 0a1.5 1.5 0 10-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-9.75 0h9.75" />
+        </svg>
+    )
+}
+
 const Icon = ({ name, size = 24, fill }) => {
     const icons = {
         home: HomeIcon,
@@ -172,7 +187,9 @@ const Icon = ({ name, size = 24, fill }) => {
         list: ListIcon,
         code: CodeIcon,
         excel: ExcelIcon,
-        pdf: PdfIcon
+        pdf: PdfIcon,
+        fullScreen: FullScreenIcon,
+        unit: UnitIcon
     }
     const Component = icons[name];
     return <Component size={size} fill={fill} />

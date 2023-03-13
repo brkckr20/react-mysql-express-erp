@@ -190,7 +190,7 @@ const MalzemeGiris = () => {
                         <div>
                             <div className='flex h-full'>
                                 <label className='inline-block max-w-[200px] w-full'>Açıklama : </label>
-                                <textarea name="aciklama" value={oncekiKayit.length > 0 ? oncekiKayit[0].ACIKLAMA : formik.values.ACIKLAMA} className='h-full pl-1 max-w-[200px] w-full'></textarea>
+                                <textarea name="aciklama" value={oncekiKayit.length > 0 ? oncekiKayit[0].ACIKLAMA : formik.values.ACIKLAMA} onChange={formik.handleChange} className='h-full pl-1 max-w-[200px] w-full'></textarea>
                             </div>
                         </div>
                     </div>
