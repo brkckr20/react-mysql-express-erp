@@ -6,6 +6,7 @@ import CariTipiModal from '../../components/Modal';
 import { cariKaydet, ulkeGetir, cariTipiGetir } from './api'
 import { cariGetir } from '../globalApi';
 import Bildirim, { basarili } from '../../components/Bildirim';
+import ExcelExport from '../../components/ExcelExport';
 
 const FirmaKarti = () => {
 
@@ -56,6 +57,23 @@ const FirmaKarti = () => {
         formik.values.CARI_TIPI = item.CARI_TIPI
     }
 
+    const formaEkle = (item) => {
+        formik.values.ADRES1 = item.ADRES1;
+        formik.values.ADRES2 = item.ADRES2;
+        formik.values.CARI_TIPI = item.CARI_TIPI;
+        formik.values.FIRMA_KODU = item.FIRMA_KODU;
+        formik.values.FIRMA_ADI1 = item.FIRMA_UNVANI;
+        formik.values.GIB_MAIL = item.GIB_MAIL;
+        formik.values.ILCE = item.ILCE;
+        formik.values.POSTA_KODU = item.POSTA_KODU;
+        formik.values.SEHIR = item.SEHIR;
+        formik.values.TELEFON = item.telefon;
+        formik.values.ULKE = item.ULKE;
+        formik.values.ULKE_KODU = item.ULKE_KODU;
+        formik.values.VERGI_DAIRESI = item.VERGI_DAIRESI;
+        formik.values.VERGI_NO = item.VERGI_NO;
+    }
+
     useEffect(() => {
         ulkeGetir().then(data => setUlkeListesi(data.data))
         cariGetir().then(data => setCariListesi(data.data))
@@ -65,11 +83,12 @@ const FirmaKarti = () => {
     return (
         <div className='bg-slate-300 w-full h-full'>
             <div className='p-2 max-w-md '>
-                <form action="">
+                <form>
                     <div className='flex gap-1 my-2'>
-                        <button title='Kaydet' onClick={formik.handleSubmit} type="submit" className='border p-2 rounded-lg hover:bg-slate-200'>
+                        <button title='Kaydet' onClick={formik.handleSubmit} type="submit" className='border p-2 rounded-lg bg-white hover:bg-slate-200'>
                             <Icon name="save" size={35} />
                         </button>
+                        <ExcelExport excelData={cariListesi} fileName="Firma Listesi" />
                     </div>
                     <div className='flex'>
                         <label className='inline-block max-w-[200px] w-full'>Firma Kodu : </label>
@@ -138,26 +157,35 @@ const FirmaKarti = () => {
             </div>
             <div className='px-2'>
                 <h1 className='font-semibold'>Mevcut Firma Listesi</h1>
-                <table className=''>
+                <table className='overscroll-auto w-full'>
                     <thead className='bg-blue-300 border'>
                         <tr>
                             <td>Firma Kodu</td>
                             <td>Firma Adı</td>
                             <td>Adres</td>
                             <td>Ülke</td>
+                            <td>Şehir</td>
+                            <td>İlçe</td>
+                            <td>Telefon</td>
+                            <td>İşlem</td>
                         </tr>
                     </thead>
                     <tbody>
                         {
                             cariListesi.map(item => (
-                                <tr key={item.ID} className='hover:bg-gray-200 cursor-pointer border divide-x' onContextMenu={(e) => {
-                                    e.preventDefault();
-                                    console.log(e)
-                                }}>
+                                <tr key={item.ID} className='hover:bg-gray-200 cursor-pointer border divide-x'>
                                     <td className={`${!item.FIRMA_KODU && 'bg-red-600'}`}>{item.FIRMA_KODU}</td>
                                     <td className={`${!item.FIRMA_UNVANI && 'bg-red-600'}`}>{item.FIRMA_UNVANI}</td>
                                     <td className={`${!item.ADRES1 && 'bg-red-600'}`}>{item.ADRES1}</td>
                                     <td className={`${!item.ULKE && 'bg-red-600'}`}>{item.ULKE}</td>
+                                    <td className={`${!item.SEHIR && 'bg-red-600'}`}>{item.SEHIR}</td>
+                                    <td className={`${!item.ILCE && 'bg-red-600'}`}>{item.ILCE}</td>
+                                    <td className={`${!item.TELEFON && 'bg-red-600'}`}>{item.TELEFON}</td>
+                                    <td className={``}>
+                                        <div className='flex items-center justify-evenly'>
+                                            <button onClick={() => formaEkle(item)}><Icon name="update" /></button>
+                                            {/*<button onClick={() => sil(item.id)}><Icon name="trash" /></button> */}
+                                        </div></td>
                                 </tr>
                             ))
                         }

@@ -139,6 +139,14 @@ const BirimKodlama = () => {
                             ))
                         }
                     </tbody>
+                    <tfoot>
+                        <tr className='bg-gray-200 text-center'>
+                            <td>Toplam :</td>
+                            <td>{filtered.length}</td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                    </tfoot>
                 </table>
             </div>
             <Bildirim />

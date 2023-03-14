@@ -66,9 +66,25 @@ export const sonrakiKayitGetir = async (depoAdi, depoTipi, id) => {
 }
 
 
-export const depoKaydet = async (depoAdi, values, kalem, tip) => {
+export const depoKaydet = async (depoAdi, values, kalem, depoTipi, id) => {
+    //id varsa güncelleme, yoksa yeni kayıt
     try {
-        const { data } = await axios.post(`${API}/${depoAdi}/${tip}`, { values, kalem });
+        const { data } = await axios.post(`${API}/${depoAdi}/${depoTipi}/${id}`, { values, kalem });
+        return data;
+    } catch (error) {
+        console.log(error.message);
+    }
+}
+
+export const vazgec = async (depoTipi, depoAdi) => {
+    /*
+        eğer alan boş ise ve eski kayıtları görmek istiyorsak kullanılacak
+        depoTipi = giriş depo mu çıkış depo mu olduğu
+        depoAdi = hangi depodan verilerin getireleceği 
+                - server isteklerinde routelara denk geliyor (frontendde kod kalabalığını azaltmak için)
+    */
+    try {
+        const { data } = await axios.get(`${API}/${depoAdi}/${depoTipi}`);
         return data;
     } catch (error) {
         console.log(error.message);

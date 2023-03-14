@@ -6,16 +6,6 @@ const initialState = {
             id: 1,
             isim: "Malzeme Giriş",
             link: "/malzeme-giris"
-        },
-        {
-            id: 2,
-            isim: "Firma Kartı",
-            link: "/firma-karti"
-        },
-        {
-            id: 3,
-            isim: "Birim Kodlama",
-            link: "/birim-kodlama"
         }
     ],
 }

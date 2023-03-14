@@ -2,12 +2,13 @@ import React, { useEffect, useState } from 'react'
 import { useFormik } from 'formik';
 import Icon from '../../icons';
 import { getData, malzemeGirisKaydet, malzemeGirisGetir, malzemeDepoListeDetay, malzemeDepoGirisTekKayitGetir } from './api';
-import { kalemIslemGetir, cariGetir, birimGetir, oncekiKayitGetir, sonrakiKayitGetir, depoKaydet } from '../globalApi';
+import { kalemIslemGetir, cariGetir, birimGetir, oncekiKayitGetir, sonrakiKayitGetir, depoKaydet, vazgec } from '../globalApi';
 import Modal from '../../components/Modal';
 import ListModal from '../../components/Modal';
 import globalFilter from '../../utils/globalFilter';
 import LabelInput from '../../components/Inputs/LabelInput';
 import { converDate } from '../../utils/converDate';
+import Bildirim, { basarili, hatali, bilgi } from '../../components/Bildirim';
 
 const MalzemeGiris = () => {
 
@@ -56,7 +57,8 @@ const MalzemeGiris = () => {
     const formik = useFormik({
         initialValues,
         onSubmit: async (values) => {
-            await depoKaydet("malzemedepo", values, kalem, "giris");
+            const veri = await depoKaydet("malzemedepo", values, kalem, "giris", gosterilenKayitId);
+            basarili(veri.message);
         },
     });
 
@@ -89,8 +91,8 @@ const MalzemeGiris = () => {
         setKalem(result);
     }
 
-    const kayitGetir = async (depoTipi) => {
-        const { data } = await malzemeGirisGetir(depoTipi);
+    const kayitGetir = async (depoTipi, depoAdi) => {
+        const { data } = await vazgec(depoTipi, depoAdi);
         setGosterilenKayitId(data[0].ID)
         setOncekiKayit(data);
         setSonKayitVar(false);
@@ -111,7 +113,6 @@ const MalzemeGiris = () => {
 
     const sonrakiKayit = async (depoAdi, depoTipi, kayitNo) => {
         const veri = await sonrakiKayitGetir(depoAdi, depoTipi, kayitNo);
-        console.log(veri);
         /* SON kayıt yok ise */
         if (veri.code === 400) {
             setSonKayitVar(false);
@@ -130,6 +131,7 @@ const MalzemeGiris = () => {
 
     const yeniFisOlustur = () => {
         setOncekiKayit([]);
+        setGosterilenKayitId(0)
     }
 
     // const idYeGoreKayitGetir = async (id) => {
@@ -142,6 +144,7 @@ const MalzemeGiris = () => {
 
     return (
         <>
+            <Bildirim />
             <div className='p-2'>
                 <form action="">
                     <div className='flex gap-1 my-2'>
@@ -163,7 +166,7 @@ const MalzemeGiris = () => {
                         <button title='Liste' type="button" onClick={() => listeDetayGetir("giris")} className='border p-2 rounded-lg hover:bg-slate-200 disabled:bg-slate-300 disabled:cursor-not-allowed'>
                             <Icon name="list" size={35} />
                         </button>
-                        <button title='Vazgeç' type="button" onClick={() => kayitGetir("giris", gosterilenKayitId)} className='border p-2 rounded-lg hover:bg-slate-200'>
+                        <button title='Vazgeç' type="button" onClick={() => kayitGetir("giris", "malzemedepo")} className='border p-2 rounded-lg hover:bg-slate-200'>
                             <Icon name="giveUp" size={35} />
                         </button>
                         <button title='Sil' type="button" className='border p-2 rounded-lg hover:bg-slate-200'>
@@ -276,9 +279,9 @@ const MalzemeGiris = () => {
                         </div>
                     </div>
                 </form>
-            </div >
-            <div className='border-t border-gray-200 px-2 overflow-x-auto'>
-                <div className='flex gap-4 items-center my-2'>
+            </div>
+            <div className='border-t border-gray-200 px-2 overflow-x-auto max-h-[410px]'>
+                <div className='flex gap-4 items-center my-2 sticky top-0 bg-gray-200'>
                     <h1 className=' text-lg font-semibold'>Malzeme Kartı</h1>
                     <div>
                         <label className='mr-2'>Ara : </label>
@@ -287,7 +290,7 @@ const MalzemeGiris = () => {
                     </div>
                 </div>
                 <table className='w-full'>
-                    <thead className='bg-green-200'>
+                    <thead className='bg-green-200 w-full  sticky top-8'>
                         <tr className='py-2'>
                             <td>Malz. Kodu</td>
                             <td>Malz. Adı</td>
@@ -299,7 +302,7 @@ const MalzemeGiris = () => {
                             <td>Malz. Marka</td>
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody className=''>
                         {
                             filtered.map(item => (
                                 <tr key={item.MALZEME_KODU} className='hover:bg-gray-200 duration-150 select-none cursor-pointer' onDoubleClick={() => handleSelectRow(item)}>

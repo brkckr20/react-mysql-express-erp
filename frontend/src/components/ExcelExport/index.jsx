@@ -12,7 +12,7 @@ const ExcelExport = ({ excelData, fileName }) => {
     }
 
     return (
-        <button title='Excel Aktar' onClick={() => handleExport()} type="button" className='border p-2 rounded-lg hover:bg-slate-200'>
+        <button title='Excel Aktar' onClick={() => handleExport()} type="button" className='border p-2 bg-white rounded-lg hover:bg-slate-200'>
             <Icon name="excel" size={25} />
         </button>
     )
